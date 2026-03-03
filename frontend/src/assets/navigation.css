@@ -1,0 +1,80 @@
+.navSystem {
+    position: fixed;
+    bottom: 30px;
+    width: 200px;
+    height: 200px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.navSystem li {
+    position: absolute;
+    left: 100px;
+    top: 100px;
+    margin-left: -20px;
+    margin-top: -20px;
+    width: 40px;
+    height: 40px;
+    list-style: none;
+    transform: rotate(0deg);
+    transition: transform 0.5s ease-out, opacity 0.3s;
+    transition-delay: calc(0.1s * var(--i)), 0s;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.navSystem li a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: aliceblue;
+    transform: rotate(calc(360deg/-5*var(--i)));
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: 0.5s;
+    color: black;
+}
+
+.navSystem li a:hover {
+    color: red;
+    box-shadow: 0 1px 2px #ff4d4d;
+
+}
+
+.navSystem.active li {
+    transform: rotate(calc(360deg/5*var(--i))) translateX(80px);
+    opacity: 1;
+    pointer-events: auto;
+    transition-delay: calc(0.1s * var(--i)), calc(0.1s * var(--i));
+}
+
+.toggle {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: aliceblue;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    font-size: 2em;
+    transform: rotate(0deg);
+    transition: transform 0.7s ease-in-out;
+}
+
+.toggle:hover {
+    box-shadow: 0 1px 2px #ff4d4d;
+    color: #ff4d4d;
+}
+
+.navSystem.active .toggle {
+    transform: rotate(315deg);
+}
