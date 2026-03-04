@@ -78,3 +78,45 @@ def user_create(request: Any) -> JsonResponse:
         row = (user_id, username, email, password)
 
     return JsonResponse(serialize_user_row(row), status=201)
+
+
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+from django.http import JsonResponse
+from django.contrib.auth.hashers import check_password
+from django.db import connection
+import json
+from typing import Any
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def login(request: Any) -> JsonResponse:
+    try:
+        payload: dict[str, Any] = json.loads(request.body or "{}")
+    except json.JSONDecodeError:
+        return JsonResponse({"detail": "Invalid JSON payload."}, status=400)
+
+    identifier = payload.get("username") or payload.get("email")
+    if not identifier:
+        return JsonResponse({"detail": "Username or email is required."}, status=400)
+
+    password = payload.get("password", "")
+    if not password:
+        return JsonResponse({"detail": "Password is required."}, status=400)
+
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "SELECT id, username, email, password FROM user WHERE username=%s OR email=%s",
+            [identifier, identifier]
+        )
+        row = cursor.fetchone()
+
+    if not row:
+        return JsonResponse({"detail": "User not found."}, status=404)
+
+    user_id, username, email, hashed_password = row
+
+    if not check_password(password, hashed_password):
+        return JsonResponse({"detail": "Invalid password."}, status=401)
+
+    return JsonResponse({"id": user_id, "username": username, "email": email}, status=200)
