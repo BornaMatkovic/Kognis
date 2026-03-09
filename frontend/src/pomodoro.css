@@ -1,0 +1,83 @@
+.pomodoroCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    width: 60vw;
+    height: 60vh;
+    border-radius: 20px;
+
+}
+
+.headingPomodoro {
+    color: white;
+    font-size: 3rem;
+    flex: 0 0 auto;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    letter-spacing: 2px;
+}
+
+.headingPomodoro h1 {
+    margin: 0;
+}
+
+.choosePomodoro {
+    flex: 0 0 auto;
+}
+
+.choosePomodoro button,
+.timer button {
+    background: white;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    margin: 20px;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    color: #667eea;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.timers {
+    flex: 3;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    width: 100%;
+}
+
+.timer {
+    background: white;
+    border-radius: 20px;
+    padding: 40px 30px;
+    min-width: 280px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.timer:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.timer h1,
+.timer h2 {
+    font-size: 4rem;
+    margin: 0 0 15px 0;
+    color: #667eea;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.timer p {
+    font-size: 1.2rem;
+    color: #666;
+    margin: 0;
+    font-weight: 500;
+    letter-spacing: 1px;
+}

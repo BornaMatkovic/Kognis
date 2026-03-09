@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./navigation.css";
 
 function Navigation() {
-    const [active, setActive] = useState(false); // <-- dodano
+    const [active, setActive] = useState(false);
+    const navigate = useNavigate();
 
     return (
         <div className={`navSystem ${active ? "active" : ""}`}>
@@ -15,7 +17,7 @@ function Navigation() {
 
             <ul>
                 <li style={{ "--i": 0 }}>
-                    <a href="#"><ion-icon name="timer-outline"></ion-icon></a>
+                    <a onClick={() => navigate("/pomodoro")} style={{ cursor: "pointer" }}><ion-icon name="timer-outline"></ion-icon></a>
                 </li>
                 <li style={{ "--i": 1 }}>
                     <a href="#"><ion-icon name="person-outline"></ion-icon></a>

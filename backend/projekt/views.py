@@ -119,4 +119,29 @@ def login(request: Any) -> JsonResponse:
     if not check_password(password, hashed_password):
         return JsonResponse({"detail": "Invalid password."}, status=401)
 
+    request.session["user_id"] = user_id #za identifikaciju
+    request.session.modified = True  # Obavezno spremi session
+
     return JsonResponse({"id": user_id, "username": username, "email": email}, status=200)
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def get_me(request: Any) -> JsonResponse:
+    user_id = request.session.get("user_id")
+
+    if not user_id:
+        return JsonResponse({"authenticated": False}, status=200)
+
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "SELECT id, username, email, password FROM user WHERE id = %s",
+            [user_id],
+        )
+        row = cursor.fetchone()
+
+        if not row:
+            request.session.pop("user_id", None)
+            return JsonResponse({"authenticated": False}, status=200)
+
+    user_data = serialize_user_row(row)
+    return JsonResponse({"authenticated": True, **user_data}, status=200)
