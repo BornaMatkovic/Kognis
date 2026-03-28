@@ -1,0 +1,75 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+    background: #f5f5f7;
+    color: #1d1d1f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ProfileCard {
+    width: min(90vw, 420px);
+    padding: 2rem;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.88);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(8px);
+}
+
+.ProfileCard h1 {
+    margin: 0 0 1.5rem;
+    text-align: center;
+    font-size: 1.65rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.ProfileCard p {
+    font-size: 0.95rem;
+    margin: 0.7rem 0;
+    padding: 0.6rem 0.9rem;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.ProfileCard .usernameP,
+.ProfileCard .emailP {
+    font-weight: 500;
+}
+
+.ProfileCard .scoreP,
+.ProfileCard .timerMinutesP,
+.ProfileCard .timerInterruptsP {
+    font-weight: 600;
+    color: #0071e3;
+}
+
+.ProfileCard button {
+    margin-top: 1.2rem;
+    width: 100%;
+    border: none;
+    border-radius: 12px;
+    padding: 0.85rem;
+    font-size: 0.96rem;
+    font-weight: 600;
+    color: #fff;
+    background: #ff3b30;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.12s ease;
+}
+
+.ProfileCard button:hover {
+    background: #e62e24;
+}
+
+.ProfileCard button:active {
+    transform: scale(0.99);
+}

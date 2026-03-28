@@ -4,6 +4,8 @@ import Login from "./login.jsx";
 import Register from "./register.jsx";
 import Home from "./home.jsx";
 import Pomodoro from "./pomodoro.jsx";
+import Profile from "./profile.jsx";
+import Quiz from "./quiz.jsx";
 
 function ProtectedRoute({ children, isLoading, isAuthenticated }) {
     if (isLoading) return <div>Loading...</div>;
@@ -85,6 +87,22 @@ function App() {
                     element={
                         <ProtectedRoute isLoading={isLoading} isAuthenticated={isAuthenticated}>
                             <Pomodoro />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/profile"
+                    element={
+                        <ProtectedRoute isLoading={isLoading} isAuthenticated={isAuthenticated}>
+                            <Profile />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/quiz"
+                    element={
+                        <ProtectedRoute isLoading={isLoading} isAuthenticated={isAuthenticated}>
+                            <Quiz />
                         </ProtectedRoute>
                     }
                 />

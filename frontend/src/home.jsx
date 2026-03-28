@@ -1,6 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Navigation from "./assets/navigation.jsx";
+import bg from "./pitcures/bg.jpg";
+import "./home.css";
 
 
 function Home() {
@@ -14,11 +16,15 @@ function Home() {
 
     return (
         <>
-            <div className="LoginCard">
-                <h1>HOME</h1>
-                <button type="button" onClick={handleLogout}>
-                    Logout
-                </button>
+            <div className="homePage">
+                <div
+                    className="homeBackground"
+                    style={{
+                        backgroundImage: `url(${bg})`,
+                    }}
+                >
+                    Content
+                </div>
             </div>
             <Navigation />
         </>

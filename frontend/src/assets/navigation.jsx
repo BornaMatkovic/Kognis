@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./navigation.css";
 
+
 function Navigation() {
     const [active, setActive] = useState(false);
     const navigate = useNavigate();
@@ -20,10 +21,10 @@ function Navigation() {
                     <a onClick={() => navigate("/pomodoro")} style={{ cursor: "pointer" }}><ion-icon name="timer-outline"></ion-icon></a>
                 </li>
                 <li style={{ "--i": 1 }}>
-                    <a href="#"><ion-icon name="person-outline"></ion-icon></a>
+                    <a onClick={() => navigate("/profile")} style={{ cursor: "pointer" }}><ion-icon name="person-outline"></ion-icon></a>
                 </li>
                 <li style={{ "--i": 2 }}>
-                    <a href="#"><ion-icon name="help-outline"></ion-icon></a>
+                    <a onClick={() => navigate("/quiz")} style={{ cursor: "pointer" }}><ion-icon name="help-outline"></ion-icon></a>
                 </li>
                 <li style={{ "--i": 3 }}>
                     <a href="#"><ion-icon name="videocam-outline"></ion-icon></a>
