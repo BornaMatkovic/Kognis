@@ -9,7 +9,6 @@ from django.views.decorators.http import require_http_methods
 
 
 def serialize_user_row(row: tuple) -> dict[str, Any]:
-    """Convert database row to user dict."""
     id_, username, email, password, timer_minutes, timer_interrupts, score = row
     return {
         "id": id_,
@@ -24,7 +23,6 @@ def serialize_user_row(row: tuple) -> dict[str, Any]:
 @csrf_exempt
 @require_http_methods(["GET", "PUT"])
 def user_detail(request: Any, user_id: int) -> JsonResponse:
-    """GET vraca korisnika po ID-u, PUT azurira postojeceg korisnika."""
     with connection.cursor() as cursor:
         cursor.execute(
             "SELECT id, username, email, password, timer_minutes, timer_interrupts, score FROM user WHERE id = %s",
@@ -61,7 +59,6 @@ def user_detail(request: Any, user_id: int) -> JsonResponse:
 @csrf_exempt
 @require_http_methods(["POST"])
 def user_create(request: Any) -> JsonResponse:
-    """Create new user without specifying ID."""
     try:
         payload: dict[str, Any] = json.loads(request.body or "{}")
     except json.JSONDecodeError:
@@ -88,14 +85,6 @@ def user_create(request: Any) -> JsonResponse:
 
     return JsonResponse(serialize_user_row(row), status=201)
 
-
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
-from django.http import JsonResponse
-from django.contrib.auth.hashers import check_password
-from django.db import connection
-import json
-from typing import Any
 
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -128,10 +117,11 @@ def login(request: Any) -> JsonResponse:
     if not check_password(password, hashed_password):
         return JsonResponse({"detail": "Invalid password."}, status=401)
 
-    request.session["user_id"] = user_id #za identifikaciju
-    request.session.modified = True  # Obavezno spremi session
+    request.session["user_id"] = user_id
+    request.session.modified = True
 
     return JsonResponse({"id": user_id, "username": username, "email": email, "timer_minutes": timer_minutes, "timer_interrupts": timer_interrupts, "score": score}, status=200)
+
 
 @csrf_exempt
 @require_http_methods(["GET"])

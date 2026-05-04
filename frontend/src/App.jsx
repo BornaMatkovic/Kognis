@@ -17,7 +17,6 @@ function App() {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        // Provjeri je li korisnik login-an kroz backend
         const checkAuth = async () => {
             try {
                 const response = await fetch("http://localhost:8000/api/me/", {
