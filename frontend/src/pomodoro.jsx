@@ -188,7 +188,7 @@ function Pomodoro() {
         const percentage = maxTime > 0 ? (timeLeft / maxTime) * 100 : 0;
         const whitePercentage = 100 - percentage;
 
-        return `linear-gradient(to bottom, white 0%, white ${whitePercentage}%, #667eea ${whitePercentage}%, #1b3eda 100%)`;
+        return `linear-gradient(to bottom, #f5f4ff 0%, #f5f4ff ${whitePercentage}%, #6366f1 ${whitePercentage}%, #7c3aed 100%)`;
     };
 
     return (
@@ -205,9 +205,11 @@ function Pomodoro() {
                 </div>
                 <div className="timer">
                     <h1>{formatTime(timeLeft)}</h1>
-                    <button onClick={startTimer} disabled={isRunning}>START</button>
-                    <button onClick={stopTimer} disabled={!isRunning}>STOP</button>
-                    <button onClick={resetTimer}>RESET</button>
+                    <div className="timer-controls">
+                        <button onClick={startTimer} disabled={isRunning}>START</button>
+                        <button onClick={stopTimer} disabled={!isRunning}>STOP</button>
+                        <button onClick={resetTimer}>RESET</button>
+                    </div>
                 </div>
             </div>
             <Navigation />

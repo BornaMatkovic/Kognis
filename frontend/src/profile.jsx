@@ -46,7 +46,7 @@ function Profile() {
     };
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <div className="profile-loading">Loading...</div>;
     }
 
     if (!userData) {
@@ -56,15 +56,24 @@ function Profile() {
     return (
         <>
             <div className="ProfileCard">
-                <h1>PROFILE</h1>
-                <p className="usernameP">Username: {userData.username}</p>
-                <p className="emailP">Email: {userData.email}</p>
-                <p className="scoreP">Score: {userData.score}</p>
-                <button onClick={handleLogout}>Logout</button>
+                <div className="profile-header">
+                    <div className="profile-avatar">{userData.username[0].toUpperCase()}</div>
+                    <span className="profile-username">{userData.username}</span>
+                </div>
+                <div className="profile-body">
+                    <div className="stat-row">
+                        <span className="stat-label">Email</span>
+                        <span className="stat-value">{userData.email}</span>
+                    </div>
+                    <div className="stat-row score-row">
+                        <span className="stat-label">Score</span>
+                        <span className="stat-value">{userData.score}</span>
+                    </div>
+                    <button className="logout-btn" onClick={handleLogout}>Logout</button>
+                </div>
             </div>
             <Navigation />
         </>
-
     );
 }
 
