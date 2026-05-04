@@ -1,15 +1,52 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import Navigation from "./assets/navigation.jsx";
 import "./pomodoro.css";
 
-function Pomodoro() {
-    const navigate = useNavigate();
+const POMODORO_STORAGE_KEY = "pomodoroTimerState";
 
-    const [timeLeft, setTimeLeft] = useState(25 * 60);
-    const [maxTime, setMaxTime] = useState(25 * 60);
-    const [isRunning, setIsRunning] = useState(false);
-    const [lastMinute, setLastMinute] = useState(25);
+const getDefaultTimerState = () => ({
+    timeLeft: 25 * 60,
+    maxTime: 25 * 60,
+    isRunning: false,
+    lastMinute: 25,
+    endAt: null,
+});
+
+const loadTimerState = () => {
+    try {
+        const raw = sessionStorage.getItem(POMODORO_STORAGE_KEY);
+        if (!raw) return getDefaultTimerState();
+
+        const parsed = JSON.parse(raw);
+        const safeState = {
+            ...getDefaultTimerState(),
+            ...parsed,
+        };
+
+        if (safeState.isRunning && safeState.endAt) {
+            const remaining = Math.max(0, Math.ceil((safeState.endAt - Date.now()) / 1000));
+            safeState.timeLeft = remaining;
+            if (remaining === 0) {
+                safeState.isRunning = false;
+                safeState.endAt = null;
+                safeState.lastMinute = 0;
+            }
+        }
+
+        return safeState;
+    } catch (err) {
+        console.error("Error loading pomodoro state:", err);
+        return getDefaultTimerState();
+    }
+};
+
+function Pomodoro() {
+    const initialState = loadTimerState();
+    const [timeLeft, setTimeLeft] = useState(initialState.timeLeft);
+    const [maxTime, setMaxTime] = useState(initialState.maxTime);
+    const [isRunning, setIsRunning] = useState(initialState.isRunning);
+    const [lastMinute, setLastMinute] = useState(initialState.lastMinute);
+    const [endAt, setEndAt] = useState(initialState.endAt);
 
     const formatTime = (seconds) => {
         const mins = Math.floor(seconds / 60);
@@ -62,6 +99,7 @@ function Pomodoro() {
         setMaxTime(25 * 60);
         setLastMinute(25);
         setIsRunning(false);
+        setEndAt(null);
     };
 
     const startS = () => {
@@ -69,6 +107,7 @@ function Pomodoro() {
         setMaxTime(5 * 60);
         setLastMinute(5);
         setIsRunning(false);
+        setEndAt(null);
     };
 
     const startL = () => {
@@ -76,48 +115,72 @@ function Pomodoro() {
         setMaxTime(20 * 60);
         setLastMinute(20);
         setIsRunning(false);
+        setEndAt(null);
     };
 
     const startTimer = () => {
+        if (timeLeft <= 0) return;
         setIsRunning(true);
+        setEndAt(Date.now() + (timeLeft * 1000));
     };
 
     const stopTimer = () => {
         setIsRunning(false);
+        setEndAt(null);
         if (isRunning) {
             updateUserStats("timer_interrupts");
         }
     };
 
     useEffect(() => {
-        let interval;
-        if (isRunning) {
-            interval = setInterval(() => {
-                setTimeLeft((prev) => {
-                    if (prev <= 1) {
-                        setIsRunning(false);
-                        return 0;
-                    }
-                    return prev - 1;
-                });
-            }, 1000);
-        }
+        if (!isRunning || !endAt) return undefined;
+
+        const tick = () => {
+            const remaining = Math.max(0, Math.ceil((endAt - Date.now()) / 1000));
+            setTimeLeft(remaining);
+
+            if (remaining === 0) {
+                setIsRunning(false);
+                setEndAt(null);
+                setLastMinute(0);
+            }
+        };
+
+        tick();
+        const interval = setInterval(tick, 1000);
+
         return () => clearInterval(interval);
-    }, [isRunning]);
+    }, [isRunning, endAt]);
 
     useEffect(() => {
         const currentMinute = Math.floor(timeLeft / 60);
         if (isRunning && currentMinute < lastMinute) {
-            updateUserStats("timer_minutes");
+            updateUserStats("timer_minutes", lastMinute - currentMinute);
             setLastMinute(currentMinute);
         }
     }, [timeLeft, isRunning, lastMinute]);
+
+    useEffect(() => {
+        try {
+            const timerState = {
+                timeLeft,
+                maxTime,
+                isRunning,
+                lastMinute,
+                endAt,
+            };
+            sessionStorage.setItem(POMODORO_STORAGE_KEY, JSON.stringify(timerState));
+        } catch (err) {
+            console.error("Error saving pomodoro state:", err);
+        }
+    }, [timeLeft, maxTime, isRunning, lastMinute, endAt]);
 
     const resetTimer = () => {
         if (isRunning) {
             updateUserStats("timer_interrupts");
         }
         setIsRunning(false);
+        setEndAt(null);
         setTimeLeft(25 * 60);
         setMaxTime(25 * 60);
         setLastMinute(25);
