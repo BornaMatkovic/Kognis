@@ -1,51 +1,119 @@
 import { useState } from 'react';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Navigation from "./assets/navigation.jsx";
+import "./quiz.css";
 
 function Quiz() {
     const [prompt, setPrompt] = useState('');
-    const [odgovor, setOdgovor] = useState('');
+    const [pitanja, setPitanja] = useState([]); // Ovdje spremamo niz objekata s pitanjima
     const [loading, setLoading] = useState(false);
+    const [odabraniOdgovori, setOdabraniOdgovori] = useState({}); // Pratimo što je korisnik kliknuo
 
     const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash", systemInstruction: "Generate quiz questions exclusively based on the text I will send you. The response must contain only the questions and the offered answers, without any introductory or accompanying text. The format of each question must be: question a) answer 1 b) answer 2 c) answer 3 d) answer 4. Next to the correct answer, place the mark (T) immediately after the answer text, inside parentheses. Do not use quotation marks in the final output. Here is the text:" });
 
-    const generirajTekst = async () => {
+    // Ključno: System Instruction traži striktan JSON format
+    const systemPrompt = `Generate a quiz based on the text. 
+    Respond ONLY with a JSON array of objects. 
+    Each object must have: 
+    "pitanje": "text of the question",
+    "opcije": ["option 1", "option 2", "option 3", "option 4"],
+    "tocanIndeks": index of correct answer (0-3).
+    Do not use markdown formatting or backticks.`;
+
+    const model = genAI.getGenerativeModel({
+        model: "gemini-2.5-flash", // Koristi 1.5-flash za brzinu i stabilnost JSON-a
+        systemInstruction: systemPrompt
+    });
+
+    const generirajKviz = async () => {
         if (!prompt) return;
-
         setLoading(true);
+        setPitanja([]); // Resetiraj stara pitanja
+        setOdabraniOdgovori({}); // Resetiraj stare odgovore
+
         try {
             const result = await model.generateContent(prompt);
-            const response = await result.response;
-            setOdgovor(response.text());
+            const responseText = result.response.text();
+
+            // Parsiramo tekst koji je Gemini poslao u pravi JavaScript objekt
+            const cleanJson = responseText.replace(/```json|```/g, ""); // Za svaki slučaj ako Gemini doda backtickove
+            const data = JSON.parse(cleanJson);
+
+            setPitanja(data);
         } catch (error) {
             console.error("Greška:", error);
-            setOdgovor("Došlo je do greške pri dohvaćanju odgovora.");
+            alert("Došlo je do greške pri generiranju kviza. Provjeri konzolu.");
         }
         setLoading(false);
     };
 
+    const handleOdgovor = (pitanjeIndex, oIndex) => {
+        // Spremi koji je gumb korisnik kliknuo za određeno pitanje
+        setOdabraniOdgovori(prev => ({
+            ...prev,
+            [pitanjeIndex]: oIndex
+        }));
+    };
+
     return (
-        <>
-            <div style={{ padding: '20px' }}>
-                <h2>Pitaj Gemini</h2>
-                <input
-                    type="text"
+        <div className="quiz-page">
+            <Navigation />
+
+            <section className="quiz-generator">
+                <h2 className='quiz-header'>Quiz Generator</h2>
+                <textarea
+                    rows="5"
+                    className="quiz-input"
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
-                    placeholder="Unesi pitanje..."
+                    placeholder="Zalijepi tekst iz kojeg želiš kviz..."
                 />
-                <button onClick={generirajTekst} disabled={loading}>
-                    {loading ? 'Generiram...' : 'Pošalji'}
+                <br />
+                <button
+                    onClick={generirajKviz}
+                    disabled={loading}
+                    className="quiz-generate-btn"
+                >
+                    {loading ? 'Stvaram kviz...' : 'Generiraj Kviz'}
                 </button>
+            </section>
 
-                <div style={{ marginTop: '20px', whiteSpace: 'pre-wrap' }}>
-                    <strong>Odgovor:</strong>
-                    <p>{odgovor}</p>
-                </div>
-            </div>
-            <Navigation />
-        </>
+            <section className="quiz-list">
+                {pitanja.map((p, pIndex) => (
+                    <div key={pIndex} className="quiz-card">
+                        <h4>{pIndex + 1}. {p.pitanje}</h4>
+                        <div className="quiz-options-grid">
+                            {p.opcije.map((opcija, oIndex) => {
+                                // Logika za bojanje gumba nakon klika
+                                const jeKliknuto = odabraniOdgovori[pIndex] === oIndex;
+                                const jeTocno = oIndex === p.tocanIndeks;
+
+                                const buttonClasses = ["quiz-option-btn"];
+                                if (jeKliknuto) {
+                                    buttonClasses.push("is-selected");
+                                    buttonClasses.push(jeTocno ? "is-correct" : "is-incorrect");
+                                }
+
+                                return (
+                                    <button
+                                        key={oIndex}
+                                        onClick={() => handleOdgovor(pIndex, oIndex)}
+                                        className={buttonClasses.join(" ")}
+                                    >
+                                        {opcija} {jeKliknuto && (jeTocno ? '✅' : '❌')}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                        {odabraniOdgovori[pIndex] !== undefined && (
+                            <p className="quiz-feedback">
+                                {odabraniOdgovori[pIndex] === p.tocanIndeks ? "Točno!" : `Netočno. Točan odgovor je: ${p.opcije[p.tocanIndeks]}`}
+                            </p>
+                        )}
+                    </div>
+                ))}
+            </section>
+        </div>
     );
 }
 
