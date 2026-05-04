@@ -66,12 +66,10 @@ function Pomodoro() {
                 [field]: currentValue + incrementBy
             };
 
-            // Ako se ažurira timer_minutes, poveća score za 1
             if (field === "timer_minutes") {
                 updateData.score = currentScore + 1;
             }
 
-            // Ako se ažurira timer_interrupts, smanji score za 5 (min 0)
             if (field === "timer_interrupts") {
                 updateData.score = Math.max(0, currentScore - 5);
             }

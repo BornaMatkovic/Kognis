@@ -5,38 +5,36 @@ import "./quiz.css";
 
 function Quiz() {
     const [prompt, setPrompt] = useState('');
-    const [pitanja, setPitanja] = useState([]); // Ovdje spremamo niz objekata s pitanjima
+    const [pitanja, setPitanja] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [odabraniOdgovori, setOdabraniOdgovori] = useState({}); // Pratimo što je korisnik kliknuo
+    const [odabraniOdgovori, setOdabraniOdgovori] = useState({});
 
     const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
-    // Ključno: System Instruction traži striktan JSON format
-    const systemPrompt = `Generate a quiz based on the text. 
-    Respond ONLY with a JSON array of objects. 
-    Each object must have: 
+    const systemPrompt = `Generate a quiz based on the text.
+    Respond ONLY with a JSON array of objects.
+    Each object must have:
     "pitanje": "text of the question",
     "opcije": ["option 1", "option 2", "option 3", "option 4"],
     "tocanIndeks": index of correct answer (0-3).
     Do not use markdown formatting or backticks.`;
 
     const model = genAI.getGenerativeModel({
-        model: "gemini-2.5-flash", // Koristi 1.5-flash za brzinu i stabilnost JSON-a
+        model: "gemini-2.5-flash",
         systemInstruction: systemPrompt
     });
 
     const generirajKviz = async () => {
         if (!prompt) return;
         setLoading(true);
-        setPitanja([]); // Resetiraj stara pitanja
-        setOdabraniOdgovori({}); // Resetiraj stare odgovore
+        setPitanja([]);
+        setOdabraniOdgovori({});
 
         try {
             const result = await model.generateContent(prompt);
             const responseText = result.response.text();
 
-            // Parsiramo tekst koji je Gemini poslao u pravi JavaScript objekt
-            const cleanJson = responseText.replace(/```json|```/g, ""); // Za svaki slučaj ako Gemini doda backtickove
+            const cleanJson = responseText.replace(/```json|```/g, "");
             const data = JSON.parse(cleanJson);
 
             setPitanja(data);
@@ -48,7 +46,6 @@ function Quiz() {
     };
 
     const handleOdgovor = (pitanjeIndex, oIndex) => {
-        // Spremi koji je gumb korisnik kliknuo za određeno pitanje
         setOdabraniOdgovori(prev => ({
             ...prev,
             [pitanjeIndex]: oIndex
@@ -84,7 +81,6 @@ function Quiz() {
                         <h4>{pIndex + 1}. {p.pitanje}</h4>
                         <div className="quiz-options-grid">
                             {p.opcije.map((opcija, oIndex) => {
-                                // Logika za bojanje gumba nakon klika
                                 const jeKliknuto = odabraniOdgovori[pIndex] === oIndex;
                                 const jeTocno = oIndex === p.tocanIndeks;
 

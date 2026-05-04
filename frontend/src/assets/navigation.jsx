@@ -11,7 +11,7 @@ function Navigation() {
         <div className={`navSystem ${active ? "active" : ""}`}>
             <div
                 className="toggle"
-                onClick={() => setActive(!active)} // <-- promjena
+                onClick={() => setActive(!active)}
             >
                 <ion-icon name="add-outline"></ion-icon>
             </div>

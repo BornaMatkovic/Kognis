@@ -31,11 +31,9 @@ function Register() {
             const data = await response.json();
 
             if (response.ok) {
-                // Registration successful
                 alert("Account created successfully!");
                 navigate("/login");
             } else {
-                // Handle error from backend
                 setError(data.detail || "Registration failed. Please try again.");
             }
         } catch (err) {
