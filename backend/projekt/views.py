@@ -42,8 +42,7 @@ def user_detail(request: Any, user_id: int) -> JsonResponse:
             id_, old_username, old_email, old_password, old_timer_minutes, old_timer_interrupts, old_score = row
             username = payload.get("username", old_username)
             email = payload.get("email", old_email)
-            raw_password = payload.get("password", old_password)
-            password = make_password(raw_password)
+            password = make_password(payload["password"]) if "password" in payload else old_password
             timer_minutes = payload.get("timer_minutes", old_timer_minutes)
             timer_interrupts = payload.get("timer_interrupts", old_timer_interrupts)
             score = payload.get("score", old_score)

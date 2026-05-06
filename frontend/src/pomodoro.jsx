@@ -54,31 +54,20 @@ function Pomodoro() {
         return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     };
 
-    const updateUserStats = async (field, incrementBy = 1) => {
+    const updateUserStats = async ({ timer_minutes = 0, timer_interrupts = 0, scoreChange = 0 }) => {
         try {
             const user = JSON.parse(sessionStorage.getItem("user"));
             if (!user || !user.id) return;
 
-            const currentValue = user[field] || 0;
-            const currentScore = user.score || 0;
-
-            let updateData = {
-                [field]: currentValue + incrementBy
+            const updateData = {
+                timer_minutes: (user.timer_minutes || 0) + timer_minutes,
+                timer_interrupts: (user.timer_interrupts || 0) + timer_interrupts,
+                score: Math.max(0, (user.score || 0) + scoreChange),
             };
-
-            if (field === "timer_minutes") {
-                updateData.score = currentScore + 1;
-            }
-
-            if (field === "timer_interrupts") {
-                updateData.score = Math.max(0, currentScore - 5);
-            }
 
             const response = await fetch(`http://localhost:8000/api/users/${user.id}/`, {
                 method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 credentials: "include",
                 body: JSON.stringify(updateData),
             });
@@ -88,7 +77,7 @@ function Pomodoro() {
                 sessionStorage.setItem("user", JSON.stringify(updatedUser));
             }
         } catch (err) {
-            console.error(`Error updating ${field}:`, err);
+            console.error("Error updating stats:", err);
         }
     };
 
@@ -126,7 +115,7 @@ function Pomodoro() {
         setIsRunning(false);
         setEndAt(null);
         if (isRunning) {
-            updateUserStats("timer_interrupts");
+            updateUserStats({ timer_interrupts: 1, scoreChange: -3 });
         }
     };
 
@@ -153,7 +142,8 @@ function Pomodoro() {
     useEffect(() => {
         const currentMinute = Math.floor(timeLeft / 60);
         if (isRunning && currentMinute < lastMinute) {
-            updateUserStats("timer_minutes", lastMinute - currentMinute);
+            const minutesCompleted = lastMinute - currentMinute;
+            updateUserStats({ timer_minutes: minutesCompleted, scoreChange: minutesCompleted });
             setLastMinute(currentMinute);
         }
     }, [timeLeft, isRunning, lastMinute]);
@@ -174,8 +164,8 @@ function Pomodoro() {
     }, [timeLeft, maxTime, isRunning, lastMinute, endAt]);
 
     const resetTimer = () => {
-        if (isRunning) {
-            updateUserStats("timer_interrupts");
+        if (timeLeft > 0) {
+            updateUserStats({ timer_interrupts: 1, scoreChange: -5 });
         }
         setIsRunning(false);
         setEndAt(null);

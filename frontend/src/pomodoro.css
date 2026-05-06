@@ -22,8 +22,9 @@ body {
     font-size: clamp(0.8rem, 2.5vw, 1rem);
     font-weight: 700;
     letter-spacing: 0.25em;
+    size: 30rem;
     text-transform: uppercase;
-    color: #1e1b4b;
+    color: #ffffff;
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
