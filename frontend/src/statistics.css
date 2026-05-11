@@ -1,0 +1,257 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100dvh;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+    background:
+        radial-gradient(ellipse 80% 50% at 20% -10%, rgba(99, 102, 241, 0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 110%, rgba(124, 58, 237, 0.1) 0%, transparent 55%),
+        #f0efff;
+    padding: 2.5rem 2rem 180px;
+}
+
+.stats-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100dvh;
+    color: #6366f1;
+    font-size: 1rem;
+    font-family: inherit;
+    gap: 0.6rem;
+}
+
+.stats-page {
+    width: 100%;
+    max-width: none;
+    margin: 0 auto;
+}
+
+/* ── Naslov ───────────────────────────────────────────────── */
+.stats-title {
+    font-size: 2.1rem;
+    font-weight: 900;
+    background: linear-gradient(120deg, #4f46e5 0%, #7c3aed 60%, #a855f7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0 0 2.2rem;
+    letter-spacing: -0.03em;
+}
+
+/* ── Dijagonalni grid (4 stupca) ──────────────────────────── */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1.3rem;
+    width: 100%;
+}
+
+.stats-card--accuracy {
+    grid-column: 1 / span 8;
+    grid-row: 1;
+}
+
+.stats-card--score {
+    grid-column: 9 / span 4;
+    grid-row: 1;
+}
+
+.stats-card--pie {
+    grid-column: 1 / span 6;
+    grid-row: 2;
+}
+
+.stats-card--bar {
+    grid-column: 7 / span 6;
+    grid-row: 2;
+}
+
+.stats-card--pomodoro {
+    grid-column: 1 / span 12;
+    grid-row: 3;
+}
+
+/* ── Kartica – baza ───────────────────────────────────────── */
+.stats-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    padding: 1.8rem 1.6rem;
+    box-shadow:
+        0 2px 0 0 rgba(99, 102, 241, 0.08) inset,
+        0 8px 32px rgba(99, 102, 241, 0.1),
+        0 1px 4px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.22s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stats-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #6366f1, #a855f7);
+    border-radius: 24px 24px 0 0;
+}
+
+.stats-card:hover {
+    transform: translateY(-4px);
+    box-shadow:
+        0 2px 0 0 rgba(99, 102, 241, 0.08) inset,
+        0 16px 48px rgba(99, 102, 241, 0.18),
+        0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* ── Score kartica – poseban stil ────────────────────────── */
+.stats-card--score {
+    background: linear-gradient(145deg, #6366f1 0%, #7c3aed 60%, #9333ea 100%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow:
+        0 8px 32px rgba(99, 102, 241, 0.4),
+        0 2px 8px rgba(99, 102, 241, 0.3);
+    align-items: center;
+    justify-content: center;
+}
+
+.stats-card--score::before {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.stats-card--score:hover {
+    box-shadow:
+        0 16px 48px rgba(99, 102, 241, 0.5),
+        0 4px 12px rgba(99, 102, 241, 0.35);
+}
+
+.stats-card--score .stats-card-title {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.stats-score-value {
+    font-size: 3.6rem;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1;
+    margin-top: 0.4rem;
+    letter-spacing: -0.03em;
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
+}
+
+.stats-score-sub {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.65);
+    margin-top: 0.45rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+/* ── Naslov kartice ───────────────────────────────────────── */
+.stats-card-title {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #7c3aed;
+    margin: 0 0 1.2rem;
+}
+
+.stats-card-title::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    flex-shrink: 0;
+}
+
+/* ── Točnost ──────────────────────────────────────────────── */
+.stats-accuracy-wrap {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stats-accuracy-label {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+}
+
+.stats-accuracy-pct {
+    font-size: 2.6rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    letter-spacing: -0.03em;
+}
+
+.stats-accuracy-sub {
+    font-size: 0.7rem;
+    color: #9ca3af;
+    margin-top: 0.35rem;
+    font-weight: 500;
+}
+
+/* ── Dekorativni krug u pozadini kartice ─────────────────── */
+.stats-card--accuracy::after,
+.stats-card--pie::after,
+.stats-card--bar::after,
+.stats-card--pomodoro::after {
+    content: "";
+    position: absolute;
+    bottom: -40px;
+    right: -40px;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.06) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 700px) {
+    body {
+        padding: 1.5rem 1rem 180px;
+    }
+
+    .stats-title {
+        font-size: 1.6rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-card--accuracy,
+    .stats-card--score,
+    .stats-card--pie,
+    .stats-card--bar,
+    .stats-card--pomodoro {
+        grid-column: 1;
+        grid-row: auto;
+    }
+}

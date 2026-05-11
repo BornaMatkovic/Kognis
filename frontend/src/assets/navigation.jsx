@@ -30,7 +30,7 @@ function Navigation() {
                     <a href="#"><ion-icon name="videocam-outline"></ion-icon></a>
                 </li>
                 <li style={{ "--i": 4 }}>
-                    <a href="#"><ion-icon name="stats-chart-outline"></ion-icon></a>
+                    <a onClick={() => navigate("/statistics")} style={{ cursor: "pointer" }}><ion-icon name="stats-chart-outline"></ion-icon></a>
                 </li>
             </ul>
         </div>
