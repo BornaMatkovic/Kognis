@@ -15,6 +15,7 @@ function Quiz() {
     const [sidebarOtvoren, setSidebarOtvoren] = useState(false);
     const [spremiKvizovi, setSpremiKvizovi] = useState([]);
     const [loadingKvizovi, setLoadingKvizovi] = useState(false);
+    const [dragging, setDragging] = useState(false);
 
     const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
@@ -123,6 +124,16 @@ function Quiz() {
         setOdabraniOdgovori(prev => ({ ...prev, [pitanjeIndex]: oIndex }));
     };
 
+    const handleDrop = (e) => {
+        e.preventDefault();
+        setDragging(false);
+        const file = e.dataTransfer.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => setPrompt(ev.target.result);
+        reader.readAsText(file, "UTF-8");
+    };
+
     const formatirajDatum = (iso) => {
         const d = new Date(iso);
         return d.toLocaleDateString('hr-HR', { day: '2-digit', month: '2-digit', year: 'numeric' });
@@ -175,13 +186,30 @@ function Quiz() {
                     onChange={(e) => setNaslov(e.target.value)}
                     placeholder="Naslov kviza..."
                 />
-                <textarea
-                    rows="5"
-                    className="quiz-input"
-                    value={prompt}
-                    onChange={(e) => setPrompt(e.target.value)}
-                    placeholder="Zalijepi tekst iz kojeg želiš kviz..."
-                />
+                <div
+                    className={`quiz-drop-zone${dragging ? " is-dragging" : ""}`}
+                    onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+                    onDragLeave={() => setDragging(false)}
+                    onDrop={handleDrop}
+                >
+                    <textarea
+                        rows="5"
+                        className="quiz-input"
+                        value={prompt}
+                        onChange={(e) => setPrompt(e.target.value)}
+                        placeholder="Zalijepi tekst iz kojeg želiš kviz..."
+                    />
+                    {dragging && (
+                        <div className="quiz-drop-overlay">
+                            <ion-icon name="document-text-outline"></ion-icon>
+                            <span>Ispusti fajl ovdje</span>
+                        </div>
+                    )}
+                    <p className="quiz-drop-hint">
+                        <ion-icon name="attach-outline"></ion-icon>
+                        Možeš i povući fajl (.txt, .md, .csv…)
+                    </p>
+                </div>
                 <div className="quiz-controls">
                     <div className="quiz-select-wrap">
                         <label className="quiz-select-label" htmlFor="quiz-num">Broj pitanja</label>
