@@ -27,7 +27,7 @@ function Navigation() {
                     <a onClick={() => navigate("/quiz")} style={{ cursor: "pointer" }}><ion-icon name="help-outline"></ion-icon></a>
                 </li>
                 <li style={{ "--i": 3 }}>
-                    <a href="#"><ion-icon name="videocam-outline"></ion-icon></a>
+                    <a onClick={() => navigate("/videos")} style={{ cursor: "pointer" }}><ion-icon name="videocam-outline"></ion-icon></a>
                 </li>
                 <li style={{ "--i": 4 }}>
                     <a onClick={() => navigate("/statistics")} style={{ cursor: "pointer" }}><ion-icon name="stats-chart-outline"></ion-icon></a>

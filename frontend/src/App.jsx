@@ -7,6 +7,7 @@ import Pomodoro from "./pomodoro.jsx";
 import Profile from "./profile.jsx";
 import Quiz from "./quiz.jsx";
 import Statistics from "./statistics.jsx";
+import Videos from "./videos.jsx";
 
 function ProtectedRoute({ children, isLoading, isAuthenticated }) {
     if (isLoading) return <div>Loading...</div>;
@@ -111,6 +112,14 @@ function App() {
                     element={
                         <ProtectedRoute isLoading={isLoading} isAuthenticated={isAuthenticated}>
                             <Statistics />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/videos"
+                    element={
+                        <ProtectedRoute isLoading={isLoading} isAuthenticated={isAuthenticated}>
+                            <Videos />
                         </ProtectedRoute>
                     }
                 />
