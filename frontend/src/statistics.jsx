@@ -1,77 +1,66 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Navigation from "./assets/navigation.jsx";
 import {
-    PieChart,
-    Pie,
-    Cell,
-    BarChart,
-    Bar,
-    XAxis,
-    YAxis,
-    Tooltip,
-    ResponsiveContainer,
-    Legend,
+    PieChart, Pie, Cell,
+    BarChart, Bar,
+    XAxis, YAxis,
+    Tooltip, ResponsiveContainer, Legend,
 } from "recharts";
 import "./statistics.css";
 
 function Statistics() {
-    const [userData, setUserData] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [korisnik, setKorisnik] = useState(null);
+    const [ucitavam, setUcitavam] = useState(true);
 
     useEffect(() => {
-        const fetchUserData = async () => {
+        const ucitajStatistiku = async () => {
             try {
-                const response = await fetch("http://localhost:8000/api/me/", {
+                const res = await fetch("http://localhost:8000/api/me/", {
                     credentials: "include",
                 });
-                if (response.ok) {
-                    const data = await response.json();
+                if (res.ok) {
+                    const data = await res.json();
                     if (data.authenticated) {
                         const { authenticated, ...user } = data;
-                        setUserData(user);
+                        setKorisnik(user);
                     }
                 }
             } catch {
-                // tiha greška
             } finally {
-                setLoading(false);
+                setUcitavam(false);
             }
         };
-        fetchUserData();
+        ucitajStatistiku();
     }, []);
 
-    if (loading) {
-        return <div className="stats-loading">Učitavam statistiku...</div>;
-    }
+    if (ucitavam) return <div className="stats-loading">Učitavam statistiku...</div>;
+    if (!korisnik) return null;
 
-    if (!userData) return null;
+    const { quiz_correct, quiz_wrong, score, timer_minutes, timer_interrupts } = korisnik;
+    const ukupnoOdgovora = quiz_correct + quiz_wrong;
+    const tocnost = ukupnoOdgovora > 0 ? Math.round((quiz_correct / ukupnoOdgovora) * 100) : 0;
+    const tocnostOgranicena = Math.max(0, Math.min(100, tocnost));
 
-    const { quiz_correct, quiz_wrong, score, timer_minutes, timer_interrupts } = userData;
-    const totalAnswers = quiz_correct + quiz_wrong;
-    const accuracy = totalAnswers > 0 ? Math.round((quiz_correct / totalAnswers) * 100) : 0;
-    const clampedAccuracy = Math.max(0, Math.min(100, accuracy));
-    const accuracyRemaining = 100 - clampedAccuracy;
+    const podaciTocnosti = [
+        { name: "Točno", value: tocnostOgranicena },
+        { name: "Preostalo", value: 100 - tocnostOgranicena },
+    ];
 
-    const pieData = [
+    const podaciPita = [
         { name: "Točno", value: quiz_correct },
         { name: "Netočno", value: quiz_wrong },
     ];
-    const PIE_COLORS = ["#6366f1", "#f87171"];
+    const bojePita = ["#6366f1", "#f87171"];
 
-    const barData = [
+    const podaciStupci = [
         { name: "Točno", vrijednost: quiz_correct },
         { name: "Netočno", vrijednost: quiz_wrong },
-        { name: "Ukupno", vrijednost: totalAnswers },
+        { name: "Ukupno", vrijednost: ukupnoOdgovora },
     ];
 
-    const pomodoroData = [
+    const podaciPomodoro = [
         { name: "Minuta", vrijednost: timer_minutes, fill: "#7c3aed" },
         { name: "Prekida", vrijednost: timer_interrupts, fill: "#a78bfa" },
-    ];
-
-    const accuracyData = [
-        { name: "Točnost", value: clampedAccuracy },
-        { name: "Preostalo", value: accuracyRemaining },
     ];
 
     return (
@@ -85,7 +74,7 @@ function Statistics() {
                         <ResponsiveContainer width="100%" height={260}>
                             <PieChart>
                                 <Pie
-                                    data={accuracyData}
+                                    data={podaciTocnosti}
                                     cx="50%"
                                     cy="50%"
                                     innerRadius={70}
@@ -102,14 +91,14 @@ function Statistics() {
                             </PieChart>
                         </ResponsiveContainer>
                         <div className="stats-accuracy-label">
-                            <span className="stats-accuracy-pct">{accuracy}%</span>
-                            <span className="stats-accuracy-sub">{totalAnswers} odgovora ukupno</span>
+                            <span className="stats-accuracy-pct">{tocnost}%</span>
+                            <span className="stats-accuracy-sub">{ukupnoOdgovora} odgovora ukupno</span>
                         </div>
                     </div>
                 </div>
 
                 <div className="stats-card stats-card--score">
-                    <h2 className="stats-card-title">Score</h2>
+                    <h2 className="stats-card-title">Bodovi</h2>
                     <div className="stats-score-value">{score}</div>
                     <div className="stats-score-sub">bodova</div>
                 </div>
@@ -119,7 +108,7 @@ function Statistics() {
                     <ResponsiveContainer width="100%" height={280}>
                         <PieChart>
                             <Pie
-                                data={pieData}
+                                data={podaciPita}
                                 cx="50%"
                                 cy="50%"
                                 innerRadius={70}
@@ -129,8 +118,8 @@ function Statistics() {
                                 label={({ name, value }) => `${name}: ${value}`}
                                 labelLine={false}
                             >
-                                {pieData.map((_, i) => (
-                                    <Cell key={i} fill={PIE_COLORS[i]} />
+                                {podaciPita.map((_, i) => (
+                                    <Cell key={i} fill={bojePita[i]} />
                                 ))}
                             </Pie>
                             <Tooltip />
@@ -142,12 +131,12 @@ function Statistics() {
                 <div className="stats-card stats-card--bar">
                     <h2 className="stats-card-title">Pregled odgovora</h2>
                     <ResponsiveContainer width="100%" height={260}>
-                        <BarChart data={barData} barSize={44}>
+                        <BarChart data={podaciStupci} barSize={44}>
                             <XAxis dataKey="name" tick={{ fontSize: 13, fill: "#6b7280" }} />
                             <YAxis tick={{ fontSize: 13, fill: "#6b7280" }} allowDecimals={false} />
                             <Tooltip />
                             <Bar dataKey="vrijednost" radius={[8, 8, 0, 0]}>
-                                {barData.map((_, i) => (
+                                {podaciStupci.map((_, i) => (
                                     <Cell
                                         key={i}
                                         fill={i === 0 ? "#6366f1" : i === 1 ? "#f87171" : "#a78bfa"}
@@ -161,12 +150,12 @@ function Statistics() {
                 <div className="stats-card stats-card--pomodoro">
                     <h2 className="stats-card-title">Pomodoro</h2>
                     <ResponsiveContainer width="100%" height={260}>
-                        <BarChart data={pomodoroData} barSize={44}>
+                        <BarChart data={podaciPomodoro} barSize={44}>
                             <XAxis dataKey="name" tick={{ fontSize: 13, fill: "#6b7280" }} />
                             <YAxis tick={{ fontSize: 13, fill: "#6b7280" }} allowDecimals={false} />
                             <Tooltip />
                             <Bar dataKey="vrijednost" radius={[8, 8, 0, 0]}>
-                                {pomodoroData.map((entry, i) => (
+                                {podaciPomodoro.map((entry, i) => (
                                     <Cell key={i} fill={entry.fill} />
                                 ))}
                             </Bar>

@@ -30,7 +30,6 @@ function Quiz() {
                 setSpremiKvizovi(data);
             }
         } catch {
-            // tiha greška — sidebar samo ostaje prazan
         }
         setLoadingKvizovi(false);
     };
@@ -119,7 +118,7 @@ function Quiz() {
             headers: { "Content-Type": "application/json" },
             credentials: "include",
             body: JSON.stringify({ correct: jeTocno ? 1 : 0, wrong: jeTocno ? 0 : 1 }),
-        }).catch(() => {});
+        }).catch(() => { });
 
         setOdabraniOdgovori(prev => ({ ...prev, [pitanjeIndex]: oIndex }));
     };
@@ -174,7 +173,7 @@ function Quiz() {
 
             <section className="quiz-generator">
                 <div className="quiz-header-row">
-                    <h2 className='quiz-header'>Quiz Generator</h2>
+                    <h2 className='quiz-header'>Generator kvizova</h2>
                     <button className="quiz-sidebar-toggle" onClick={() => setSidebarOtvoren(true)}>
                         Moji kvizovi
                     </button>

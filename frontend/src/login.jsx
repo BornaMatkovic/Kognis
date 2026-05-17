@@ -1,46 +1,41 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./login.css";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
-    const [identifier, setIdentifier] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [identifikator, setIdentifikator] = useState("");
+    const [lozinka, setLozinka] = useState("");
+    const [greska, setGreska] = useState("");
+    const [ucitavam, setUcitavam] = useState(false);
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
+    const prijava = async (e) => {
         e.preventDefault();
-        setError("");
-        setLoading(true);
+        setGreska("");
+        setUcitavam(true);
 
         try {
-            const response = await fetch("http://localhost:8000/api/login/", {
+            const res = await fetch("http://localhost:8000/api/login/", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 credentials: "include",
-                body: JSON.stringify({
-                    username: identifier,
-                    password,
-                }),
+                body: JSON.stringify({ username: identifikator, password: lozinka }),
             });
 
-            const data = await response.json();
+            const data = await res.json();
 
-            if (response.ok) {
+            if (res.ok) {
                 localStorage.removeItem("user");
                 sessionStorage.setItem("user", JSON.stringify(data));
                 navigate("/home");
             } else {
-                setError(data.detail || "Login failed. Please try again.");
+                setGreska(data.detail || "Pogrešni podaci. Pokušaj ponovo.");
             }
         } catch (err) {
-            setError("Network error. Please check if the backend is running.");
-            console.error("Login error:", err);
+            setGreska("Mrežna greška. Provjeri je li backend aktivan.");
+            console.error("Greška pri prijavi:", err);
         } finally {
-            setLoading(false);
+            setUcitavam(false);
         }
     };
 
@@ -48,32 +43,32 @@ function Login() {
         <>
             <div className="LoginCard">
                 <h1>LOGIN</h1>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={prijava}>
                     <input
                         type="text"
-                        placeholder="Username or email"
-                        value={identifier}
-                        onChange={(e) => setIdentifier(e.target.value)}
+                        placeholder="Korisničko ime ili e-mail"
+                        value={identifikator}
+                        onChange={(e) => setIdentifikator(e.target.value)}
                         required
                     />
                     <input
                         type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Lozinka"
+                        value={lozinka}
+                        onChange={(e) => setLozinka(e.target.value)}
                         required
                     />
-                    {error && <div style={{ color: "red", margin: "10px 0" }}>{error}</div>}
-                    <span className="registerJump"
+                    {greska && <div style={{ color: "red", margin: "10px 0" }}>{greska}</div>}
+                    <span
+                        className="registerJump"
                         onClick={() => navigate("/register")}
                         style={{ cursor: "pointer", color: "blue" }}
                     >
-                        register
+                        Registriraj se
                     </span>
-                    <button type="submit" disabled={loading}>
-                        {loading ? "Logging in..." : "Login"}
+                    <button type="submit" disabled={ucitavam}>
+                        {ucitavam ? "Prijava..." : "Login"}
                     </button>
-
                 </form>
             </div>
         </>

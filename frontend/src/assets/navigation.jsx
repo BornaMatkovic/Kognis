@@ -1,18 +1,14 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./navigation.css";
 
-
 function Navigation() {
-    const [active, setActive] = useState(false);
+    const [aktivan, setAktivan] = useState(false);
     const navigate = useNavigate();
 
     return (
-        <div className={`navSystem ${active ? "active" : ""}`}>
-            <div
-                className="toggle"
-                onClick={() => setActive(!active)}
-            >
+        <div className={`navSystem ${aktivan ? "active" : ""}`}>
+            <div className="toggle" onClick={() => setAktivan(!aktivan)}>
                 <ion-icon name="add-outline"></ion-icon>
             </div>
 

@@ -7,7 +7,7 @@ const YT_KEY = import.meta.env.VITE_YOUTUBE_API_KEY;
 function Videos() {
     const [tema, setTema] = useState("");
     const [videi, setVidei] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [ucitavam, setUcitavam] = useState(false);
     const [greska, setGreska] = useState("");
     const [pretrazeno, setPretrazeno] = useState(false);
 
@@ -15,7 +15,7 @@ function Videos() {
         e.preventDefault();
         if (!tema.trim()) return;
 
-        setLoading(true);
+        setUcitavam(true);
         setGreska("");
         setVidei([]);
 
@@ -34,7 +34,7 @@ function Videos() {
         } catch {
             setGreska("Nije moguće dohvatiti videe. Provjeri internet ili API ključ.");
         } finally {
-            setLoading(false);
+            setUcitavam(false);
         }
     };
 
@@ -51,21 +51,21 @@ function Videos() {
                         value={tema}
                         onChange={(e) => setTema(e.target.value)}
                     />
-                    <button className="videos-btn" type="submit" disabled={loading || !tema.trim()}>
-                        {loading ? "Tražim…" : "Pretraži"}
+                    <button className="videos-btn" type="submit" disabled={ucitavam || !tema.trim()}>
+                        {ucitavam ? "Tražim…" : "Pretraži"}
                     </button>
                 </form>
 
                 {greska && <p className="videos-error">{greska}</p>}
 
-                {!pretrazeno && !loading && (
+                {!pretrazeno && !ucitavam && (
                     <div className="videos-empty">
                         <ion-icon name="videocam-outline" class="videos-empty-icon"></ion-icon>
                         <p>Upiši temu i pronađi edukativne videe</p>
                     </div>
                 )}
 
-                {loading && (
+                {ucitavam && (
                     <div className="videos-loading">
                         <div className="videos-spinner"></div>
                         <p>Tražim videe…</p>
@@ -105,7 +105,7 @@ function Videos() {
                     </div>
                 )}
 
-                {pretrazeno && videi.length === 0 && !loading && !greska && (
+                {pretrazeno && videi.length === 0 && !ucitavam && !greska && (
                     <p className="videos-no-results">Nema rezultata za "{tema}".</p>
                 )}
             </div>
