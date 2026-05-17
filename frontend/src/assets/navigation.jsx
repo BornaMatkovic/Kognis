@@ -1,18 +1,14 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./navigation.css";
 
-
 function Navigation() {
-    const [active, setActive] = useState(false);
+    const [aktivan, setAktivan] = useState(false);
     const navigate = useNavigate();
 
     return (
-        <div className={`navSystem ${active ? "active" : ""}`}>
-            <div
-                className="toggle"
-                onClick={() => setActive(!active)}
-            >
+        <div className={`navSystem ${aktivan ? "active" : ""}`}>
+            <div className="toggle" onClick={() => setAktivan(!aktivan)}>
                 <ion-icon name="add-outline"></ion-icon>
             </div>
 
@@ -27,10 +23,10 @@ function Navigation() {
                     <a onClick={() => navigate("/quiz")} style={{ cursor: "pointer" }}><ion-icon name="help-outline"></ion-icon></a>
                 </li>
                 <li style={{ "--i": 3 }}>
-                    <a href="#"><ion-icon name="videocam-outline"></ion-icon></a>
+                    <a onClick={() => navigate("/videos")} style={{ cursor: "pointer" }}><ion-icon name="videocam-outline"></ion-icon></a>
                 </li>
                 <li style={{ "--i": 4 }}>
-                    <a href="#"><ion-icon name="stats-chart-outline"></ion-icon></a>
+                    <a onClick={() => navigate("/statistics")} style={{ cursor: "pointer" }}><ion-icon name="stats-chart-outline"></ion-icon></a>
                 </li>
             </ul>
         </div>

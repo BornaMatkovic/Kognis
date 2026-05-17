@@ -4,72 +4,124 @@
 
 body {
     margin: 0;
-    min-height: 100vh;
+    min-height: 100dvh;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
-    background: #f5f5f7;
-    color: #1d1d1f;
+    background: #f5f4ff;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 1.5rem 1rem 160px;
 }
 
-.ProfileCard {
-    width: min(90vw, 420px);
-    padding: 2rem;
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.88);
-    border: 1px solid rgba(0, 0, 0, 0.06);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-    backdrop-filter: blur(8px);
+.ucitavanje {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100dvh;
+    color: #6366f1;
+    font-size: 1rem;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
 }
 
-.ProfileCard h1 {
-    margin: 0 0 1.5rem;
-    text-align: center;
-    font-size: 1.65rem;
+.profil {
+    width: min(92vw, 380px);
+    border-radius: 24px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 8px 40px rgba(99, 102, 241, 0.15), 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.zaglavlje {
+    background: linear-gradient(135deg, #6366f1 0%, #7c3aed 100%);
+    padding: 2rem 1.5rem 1.6rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.22);
+    border: 2.5px solid rgba(255, 255, 255, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: white;
+}
+
+.ime {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
     font-weight: 600;
     letter-spacing: 0.02em;
 }
 
-.ProfileCard p {
-    font-size: 0.95rem;
-    margin: 0.7rem 0;
-    padding: 0.6rem 0.9rem;
-    background: rgba(0, 0, 0, 0.02);
-    border-radius: 10px;
-    border: 1px solid rgba(0, 0, 0, 0.05);
+.sadrzaj {
+    padding: 1.3rem 1.4rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
 }
 
-.ProfileCard .usernameP,
-.ProfileCard .emailP {
+.redak {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    background: #f8f7ff;
+    border: 1px solid #ede9fe;
+}
+
+.oznaka {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #7c3aed;
+}
+
+.vrijednost {
+    font-size: 0.88rem;
     font-weight: 500;
+    color: #1e1b4b;
+    max-width: 58%;
+    text-align: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.ProfileCard .scoreP,
-.ProfileCard .timerMinutesP,
-.ProfileCard .timerInterruptsP {
-    font-weight: 600;
-    color: #0071e3;
+.bodovi .vrijednost {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #6366f1;
 }
 
-.ProfileCard button {
-    margin-top: 1.2rem;
+.odjava {
+    margin-top: 0.5rem;
     width: 100%;
     border: none;
     border-radius: 12px;
-    padding: 0.85rem;
-    font-size: 0.96rem;
+    padding: 0.82rem;
+    font-size: 0.88rem;
     font-weight: 600;
     color: #fff;
-    background: #ff3b30;
+    background: #ef4444;
     cursor: pointer;
-    transition: background 0.2s ease, transform 0.12s ease;
+    font-family: inherit;
+    transition: background 0.2s, transform 0.12s;
 }
 
-.ProfileCard button:hover {
-    background: #e62e24;
+.odjava:hover {
+    background: #dc2626;
 }
 
-.ProfileCard button:active {
+.odjava:active {
     transform: scale(0.99);
 }

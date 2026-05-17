@@ -1,58 +1,52 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Register() {
-    const [username, setUsername] = useState("");
+    const [korisnickoIme, setKorisnickoIme] = useState("");
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [lozinka, setLozinka] = useState("");
+    const [greska, setGreska] = useState("");
+    const [ucitavam, setUcitavam] = useState(false);
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
+    const registracija = async (e) => {
         e.preventDefault();
-        setError("");
-        setLoading(true);
+        setGreska("");
+        setUcitavam(true);
 
         try {
-            const response = await fetch("http://localhost:8000/api/users/", {
+            const res = await fetch("http://localhost:8000/api/users/", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 credentials: "include",
-                body: JSON.stringify({
-                    username,
-                    email,
-                    password,
-                }),
+                body: JSON.stringify({ username: korisnickoIme, email, password: lozinka }),
             });
 
-            const data = await response.json();
+            const data = await res.json();
 
-            if (response.ok) {
-                alert("Account created successfully!");
+            if (res.ok) {
+                alert("Račun je uspješno kreiran!");
                 navigate("/login");
             } else {
-                setError(data.detail || "Registration failed. Please try again.");
+                setGreska(data.detail || "Registracija nije uspjela. Pokušaj ponovo.");
             }
         } catch (err) {
-            setError("Network error. Please check if the backend is running.");
-            console.error("Registration error:", err);
+            setGreska("Mrežna greška. Provjeri je li backend aktivan.");
+            console.error("Greška pri registraciji:", err);
         } finally {
-            setLoading(false);
+            setUcitavam(false);
         }
     };
 
     return (
-        <div className="LoginCard">
+        <div className="prijava">
             <h1>REGISTER</h1>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={registracija}>
                 <input
                     type="text"
-                    placeholder="Username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Korisničko ime"
+                    value={korisnickoIme}
+                    onChange={(e) => setKorisnickoIme(e.target.value)}
                     required
                 />
                 <input
@@ -64,14 +58,14 @@ function Register() {
                 />
                 <input
                     type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Lozinka"
+                    value={lozinka}
+                    onChange={(e) => setLozinka(e.target.value)}
                     required
                 />
-                {error && <div style={{ color: "red", margin: "10px 0" }}>{error}</div>}
-                <button type="submit" disabled={loading}>
-                    {loading ? "Creating account..." : "Create account"}
+                {greska && <div style={{ color: "red", margin: "10px 0" }}>{greska}</div>}
+                <button type="submit" disabled={ucitavam}>
+                    {ucitavam ? "Kreiram račun..." : "Kreiraj račun"}
                 </button>
             </form>
         </div>

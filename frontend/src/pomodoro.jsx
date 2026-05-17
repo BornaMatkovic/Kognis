@@ -2,212 +2,198 @@ import React, { useState, useEffect } from "react";
 import Navigation from "./assets/navigation.jsx";
 import "./pomodoro.css";
 
-const POMODORO_STORAGE_KEY = "pomodoroTimerState";
+const KLJUC_POHRANE = "pomodoroTimerState";
 
-const getDefaultTimerState = () => ({
-    timeLeft: 25 * 60,
-    maxTime: 25 * 60,
-    isRunning: false,
-    lastMinute: 25,
-    endAt: null,
+const pocetnoStanje = () => ({
+    vrijemePreostalo: 25 * 60,
+    maksimalnoVrijeme: 25 * 60,
+    aktivan: false,
+    zadnjaMinuta: 25,
+    zavrsetakAt: null,
 });
 
-const loadTimerState = () => {
+const ucitajStanje = () => {
     try {
-        const raw = sessionStorage.getItem(POMODORO_STORAGE_KEY);
-        if (!raw) return getDefaultTimerState();
+        const raw = sessionStorage.getItem(KLJUC_POHRANE);
+        if (!raw) return pocetnoStanje();
 
         const parsed = JSON.parse(raw);
-        const safeState = {
-            ...getDefaultTimerState(),
-            ...parsed,
-        };
+        const stanje = { ...pocetnoStanje(), ...parsed };
 
-        if (safeState.isRunning && safeState.endAt) {
-            const remaining = Math.max(0, Math.ceil((safeState.endAt - Date.now()) / 1000));
-            safeState.timeLeft = remaining;
-            if (remaining === 0) {
-                safeState.isRunning = false;
-                safeState.endAt = null;
-                safeState.lastMinute = 0;
+        if (stanje.aktivan && stanje.zavrsetakAt) {
+            const preostalo = Math.max(0, Math.ceil((stanje.zavrsetakAt - Date.now()) / 1000));
+            stanje.vrijemePreostalo = preostalo;
+            if (preostalo === 0) {
+                stanje.aktivan = false;
+                stanje.zavrsetakAt = null;
+                stanje.zadnjaMinuta = 0;
             }
         }
 
-        return safeState;
+        return stanje;
     } catch (err) {
-        console.error("Error loading pomodoro state:", err);
-        return getDefaultTimerState();
+        console.error("Greška pri učitavanju stanja:", err);
+        return pocetnoStanje();
     }
 };
 
 function Pomodoro() {
-    const initialState = loadTimerState();
-    const [timeLeft, setTimeLeft] = useState(initialState.timeLeft);
-    const [maxTime, setMaxTime] = useState(initialState.maxTime);
-    const [isRunning, setIsRunning] = useState(initialState.isRunning);
-    const [lastMinute, setLastMinute] = useState(initialState.lastMinute);
-    const [endAt, setEndAt] = useState(initialState.endAt);
+    const init = ucitajStanje();
+    const [vrijemePreostalo, setVrijemePreostalo] = useState(init.vrijemePreostalo);
+    const [maksimalnoVrijeme, setMaksimalnoVrijeme] = useState(init.maksimalnoVrijeme);
+    const [aktivan, setAktivan] = useState(init.aktivan);
+    const [zadnjaMinuta, setZadnjaMinuta] = useState(init.zadnjaMinuta);
+    const [zavrsetakAt, setZavrsetakAt] = useState(init.zavrsetakAt);
 
-    const formatTime = (seconds) => {
-        const mins = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    const formatirajVrijeme = (sekunde) => {
+        const min = Math.floor(sekunde / 60);
+        const sek = sekunde % 60;
+        return `${min.toString().padStart(2, '0')}:${sek.toString().padStart(2, '0')}`;
     };
 
-    const updateUserStats = async (field, incrementBy = 1) => {
+    const azurirajStatistiku = async ({ timer_minutes = 0, timer_interrupts = 0, scoreChange = 0 }) => {
         try {
             const user = JSON.parse(sessionStorage.getItem("user"));
             if (!user || !user.id) return;
 
-            const currentValue = user[field] || 0;
-            const currentScore = user.score || 0;
-
-            let updateData = {
-                [field]: currentValue + incrementBy
+            const noviPodaci = {
+                timer_minutes: (user.timer_minutes || 0) + timer_minutes,
+                timer_interrupts: (user.timer_interrupts || 0) + timer_interrupts,
+                score: Math.max(0, (user.score || 0) + scoreChange),
             };
 
-            if (field === "timer_minutes") {
-                updateData.score = currentScore + 1;
-            }
-
-            if (field === "timer_interrupts") {
-                updateData.score = Math.max(0, currentScore - 5);
-            }
-
-            const response = await fetch(`http://localhost:8000/api/users/${user.id}/`, {
+            const res = await fetch(`http://localhost:8000/api/users/${user.id}/`, {
                 method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 credentials: "include",
-                body: JSON.stringify(updateData),
+                body: JSON.stringify(noviPodaci),
             });
 
-            if (response.ok) {
-                const updatedUser = await response.json();
-                sessionStorage.setItem("user", JSON.stringify(updatedUser));
+            if (res.ok) {
+                const azuriraniKorisnik = await res.json();
+                sessionStorage.setItem("user", JSON.stringify(azuriraniKorisnik));
             }
         } catch (err) {
-            console.error(`Error updating ${field}:`, err);
+            console.error("Greška pri ažuriranju statistike:", err);
         }
     };
 
-    const startP = () => {
-        setTimeLeft(25 * 60);
-        setMaxTime(25 * 60);
-        setLastMinute(25);
-        setIsRunning(false);
-        setEndAt(null);
+    const pokreniPomodoro = () => {
+        setVrijemePreostalo(25 * 60);
+        setMaksimalnoVrijeme(25 * 60);
+        setZadnjaMinuta(25);
+        setAktivan(false);
+        setZavrsetakAt(null);
     };
 
-    const startS = () => {
-        setTimeLeft(5 * 60);
-        setMaxTime(5 * 60);
-        setLastMinute(5);
-        setIsRunning(false);
-        setEndAt(null);
+    const pokreniKratkuPauzu = () => {
+        setVrijemePreostalo(5 * 60);
+        setMaksimalnoVrijeme(5 * 60);
+        setZadnjaMinuta(5);
+        setAktivan(false);
+        setZavrsetakAt(null);
     };
 
-    const startL = () => {
-        setTimeLeft(20 * 60);
-        setMaxTime(20 * 60);
-        setLastMinute(20);
-        setIsRunning(false);
-        setEndAt(null);
+    const pokreniDuguPauzu = () => {
+        setVrijemePreostalo(20 * 60);
+        setMaksimalnoVrijeme(20 * 60);
+        setZadnjaMinuta(20);
+        setAktivan(false);
+        setZavrsetakAt(null);
     };
 
-    const startTimer = () => {
-        if (timeLeft <= 0) return;
-        setIsRunning(true);
-        setEndAt(Date.now() + (timeLeft * 1000));
+    const pokreni = () => {
+        if (vrijemePreostalo <= 0) return;
+        setAktivan(true);
+        setZavrsetakAt(Date.now() + (vrijemePreostalo * 1000));
     };
 
-    const stopTimer = () => {
-        setIsRunning(false);
-        setEndAt(null);
-        if (isRunning) {
-            updateUserStats("timer_interrupts");
+    const zaustavi = () => {
+        setAktivan(false);
+        setZavrsetakAt(null);
+        if (aktivan) {
+            azurirajStatistiku({ timer_interrupts: 1, scoreChange: -3 });
         }
     };
 
     useEffect(() => {
-        if (!isRunning || !endAt) return undefined;
+        if (!aktivan || !zavrsetakAt) return undefined;
 
-        const tick = () => {
-            const remaining = Math.max(0, Math.ceil((endAt - Date.now()) / 1000));
-            setTimeLeft(remaining);
+        const tik = () => {
+            const preostalo = Math.max(0, Math.ceil((zavrsetakAt - Date.now()) / 1000));
+            setVrijemePreostalo(preostalo);
 
-            if (remaining === 0) {
-                setIsRunning(false);
-                setEndAt(null);
-                setLastMinute(0);
+            if (preostalo === 0) {
+                setAktivan(false);
+                setZavrsetakAt(null);
+                setZadnjaMinuta(0);
             }
         };
 
-        tick();
-        const interval = setInterval(tick, 1000);
-
+        tik();
+        const interval = setInterval(tik, 1000);
         return () => clearInterval(interval);
-    }, [isRunning, endAt]);
+    }, [aktivan, zavrsetakAt]);
 
     useEffect(() => {
-        const currentMinute = Math.floor(timeLeft / 60);
-        if (isRunning && currentMinute < lastMinute) {
-            updateUserStats("timer_minutes", lastMinute - currentMinute);
-            setLastMinute(currentMinute);
+        const trenutnaMinuta = Math.floor(vrijemePreostalo / 60);
+        if (aktivan && trenutnaMinuta < zadnjaMinuta) {
+            const zavrseneMinute = zadnjaMinuta - trenutnaMinuta;
+            azurirajStatistiku({ timer_minutes: zavrseneMinute, scoreChange: zavrseneMinute });
+            setZadnjaMinuta(trenutnaMinuta);
         }
-    }, [timeLeft, isRunning, lastMinute]);
+    }, [vrijemePreostalo, aktivan, zadnjaMinuta]);
 
     useEffect(() => {
         try {
-            const timerState = {
-                timeLeft,
-                maxTime,
-                isRunning,
-                lastMinute,
-                endAt,
-            };
-            sessionStorage.setItem(POMODORO_STORAGE_KEY, JSON.stringify(timerState));
+            sessionStorage.setItem(KLJUC_POHRANE, JSON.stringify({
+                vrijemePreostalo,
+                maksimalnoVrijeme,
+                aktivan,
+                zadnjaMinuta,
+                zavrsetakAt,
+            }));
         } catch (err) {
-            console.error("Error saving pomodoro state:", err);
+            console.error("Greška pri pohrani stanja:", err);
         }
-    }, [timeLeft, maxTime, isRunning, lastMinute, endAt]);
+    }, [vrijemePreostalo, maksimalnoVrijeme, aktivan, zadnjaMinuta, zavrsetakAt]);
 
-    const resetTimer = () => {
-        if (isRunning) {
-            updateUserStats("timer_interrupts");
+    const resetiraj = () => {
+        if (vrijemePreostalo > 0) {
+            azurirajStatistiku({ timer_interrupts: 1, scoreChange: -5 });
         }
-        setIsRunning(false);
-        setEndAt(null);
-        setTimeLeft(25 * 60);
-        setMaxTime(25 * 60);
-        setLastMinute(25);
+        setAktivan(false);
+        setZavrsetakAt(null);
+        setVrijemePreostalo(25 * 60);
+        setMaksimalnoVrijeme(25 * 60);
+        setZadnjaMinuta(25);
     };
 
-    const getBackgroundGradient = () => {
-        const percentage = maxTime > 0 ? (timeLeft / maxTime) * 100 : 0;
-        const whitePercentage = 100 - percentage;
-
-        return `linear-gradient(to bottom, white 0%, white ${whitePercentage}%, #667eea ${whitePercentage}%, #1b3eda 100%)`;
+    const gradijentPozadine = () => {
+        const postotak = maksimalnoVrijeme > 0 ? (vrijemePreostalo / maksimalnoVrijeme) * 100 : 0;
+        const bijelo = 100 - postotak;
+        return `linear-gradient(to bottom, #f5f4ff 0%, #f5f4ff ${bijelo}%, #6366f1 ${bijelo}%, #7c3aed 100%)`;
     };
 
     return (
         <>
-            <div className="pomodoroCard" style={{ background: getBackgroundGradient() }}>
-                <div className="headingPomodoro">
-                    <h1>POMODORO TIMERS</h1>
+            <div className="kartica" style={{ background: gradijentPozadine() }}>
+                <div className="naslov">
+                    <h1>POMODORO TAJMERI</h1>
                 </div>
 
-                <div className="choosePomodoro">
-                    <button onClick={startP}>pomodoro</button>
-                    <button onClick={startS}>short break</button>
-                    <button onClick={startL}>long break</button>
+                <div className="odabir">
+                    <button onClick={pokreniPomodoro}>pomodoro</button>
+                    <button onClick={pokreniKratkuPauzu}>kratka pauza</button>
+                    <button onClick={pokreniDuguPauzu}>duga pauza</button>
                 </div>
-                <div className="timer">
-                    <h1>{formatTime(timeLeft)}</h1>
-                    <button onClick={startTimer} disabled={isRunning}>START</button>
-                    <button onClick={stopTimer} disabled={!isRunning}>STOP</button>
-                    <button onClick={resetTimer}>RESET</button>
+                <div className="tajmer">
+                    <h1>{formatirajVrijeme(vrijemePreostalo)}</h1>
+                    <div className="gumbi">
+                        <button onClick={pokreni} disabled={aktivan}>KRENI</button>
+                        <button onClick={zaustavi} disabled={!aktivan}>STANI</button>
+                        <button onClick={resetiraj}>RESET</button>
+                    </div>
                 </div>
             </div>
             <Navigation />

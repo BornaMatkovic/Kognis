@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./login.jsx";
 import Register from "./register.jsx";
@@ -6,48 +6,50 @@ import Home from "./home.jsx";
 import Pomodoro from "./pomodoro.jsx";
 import Profile from "./profile.jsx";
 import Quiz from "./quiz.jsx";
+import Statistics from "./statistics.jsx";
+import Videos from "./videos.jsx";
 
-function ProtectedRoute({ children, isLoading, isAuthenticated }) {
-    if (isLoading) return <div>Loading...</div>;
-    return isAuthenticated ? children : <Navigate to="/login" replace />;
+function ZasticenaRuta({ children, ucitavam, prijavljen }) {
+    if (ucitavam) return <div>Učitavam...</div>;
+    return prijavljen ? children : <Navigate to="/login" replace />;
 }
 
 function App() {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
+    const [prijavljen, setPrijavljen] = useState(false);
+    const [ucitavam, setUcitavam] = useState(true);
 
     useEffect(() => {
-        const checkAuth = async () => {
+        const provjeriSesiju = async () => {
             try {
-                const response = await fetch("http://localhost:8000/api/me/", {
+                const res = await fetch("http://localhost:8000/api/me/", {
                     method: "GET",
                     credentials: "include",
                 });
 
-                if (response.ok) {
-                    const data = await response.json();
+                if (res.ok) {
+                    const data = await res.json();
                     if (data.authenticated) {
                         const { authenticated, ...user } = data;
                         sessionStorage.setItem("user", JSON.stringify(user));
-                        setIsAuthenticated(true);
+                        setPrijavljen(true);
                     } else {
                         sessionStorage.removeItem("user");
-                        setIsAuthenticated(false);
+                        setPrijavljen(false);
                     }
                 } else {
                     sessionStorage.removeItem("user");
-                    setIsAuthenticated(false);
+                    setPrijavljen(false);
                 }
             } catch (err) {
-                console.error("Auth check error:", err);
+                console.error("Greška pri provjeri sesije:", err);
                 sessionStorage.removeItem("user");
-                setIsAuthenticated(false);
+                setPrijavljen(false);
             } finally {
-                setIsLoading(false);
+                setUcitavam(false);
             }
         };
 
-        checkAuth();
+        provjeriSesiju();
     }, []);
 
     return (
@@ -56,61 +58,71 @@ function App() {
                 <Route
                     path="/"
                     element={
-                        isLoading ? (
-                            <div>Loading...</div>
-                        ) : isAuthenticated ? (
+                        ucitavam ? (
+                            <div>Učitavam...</div>
+                        ) : prijavljen ? (
                             <Navigate to="/home" replace />
                         ) : (
                             <Navigate to="/login" replace />
                         )
                     }
                 />
-                <Route
-                    path="/login"
-                    element={<Login />}
-                />
-                <Route
-                    path="/register"
-                    element={<Register />}
-                />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
                 <Route
                     path="/home"
                     element={
-                        <ProtectedRoute isLoading={isLoading} isAuthenticated={isAuthenticated}>
+                        <ZasticenaRuta ucitavam={ucitavam} prijavljen={prijavljen}>
                             <Home />
-                        </ProtectedRoute>
+                        </ZasticenaRuta>
                     }
                 />
                 <Route
                     path="/pomodoro"
                     element={
-                        <ProtectedRoute isLoading={isLoading} isAuthenticated={isAuthenticated}>
+                        <ZasticenaRuta ucitavam={ucitavam} prijavljen={prijavljen}>
                             <Pomodoro />
-                        </ProtectedRoute>
+                        </ZasticenaRuta>
                     }
                 />
                 <Route
                     path="/profile"
                     element={
-                        <ProtectedRoute isLoading={isLoading} isAuthenticated={isAuthenticated}>
+                        <ZasticenaRuta ucitavam={ucitavam} prijavljen={prijavljen}>
                             <Profile />
-                        </ProtectedRoute>
+                        </ZasticenaRuta>
                     }
                 />
                 <Route
                     path="/quiz"
                     element={
-                        <ProtectedRoute isLoading={isLoading} isAuthenticated={isAuthenticated}>
+                        <ZasticenaRuta ucitavam={ucitavam} prijavljen={prijavljen}>
                             <Quiz />
-                        </ProtectedRoute>
+                        </ZasticenaRuta>
+                    }
+                />
+                <Route
+                    path="/statistics"
+                    element={
+                        <ZasticenaRuta ucitavam={ucitavam} prijavljen={prijavljen}>
+                            <Statistics />
+                        </ZasticenaRuta>
+                    }
+                />
+                <Route
+                    path="/videos"
+                    element={
+                        <ZasticenaRuta ucitavam={ucitavam} prijavljen={prijavljen}>
+                            <Videos />
+                        </ZasticenaRuta>
                     }
                 />
                 <Route
                     path="*"
                     element={
-                        isLoading ? (
-                            <div>Loading...</div>
-                        ) : isAuthenticated ? (
+                        ucitavam ? (
+                            <div>Učitavam...</div>
+                        ) : prijavljen ? (
                             <Navigate to="/home" replace />
                         ) : (
                             <Navigate to="/login" replace />

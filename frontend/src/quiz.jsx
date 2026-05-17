@@ -1,15 +1,51 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Navigation from "./assets/navigation.jsx";
 import "./quiz.css";
 
 function Quiz() {
+    const [naslov, setNaslov] = useState('');
     const [prompt, setPrompt] = useState('');
+    const [brojPitanja, setBrojPitanja] = useState(10);
     const [pitanja, setPitanja] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [saving, setSaving] = useState(false);
+    const [savedMsg, setSavedMsg] = useState('');
     const [odabraniOdgovori, setOdabraniOdgovori] = useState({});
+    const [sidebarOtvoren, setSidebarOtvoren] = useState(false);
+    const [spremiKvizovi, setSpremiKvizovi] = useState([]);
+    const [loadingKvizovi, setLoadingKvizovi] = useState(false);
+    const [dragging, setDragging] = useState(false);
 
     const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
+
+    const dohvatiKvizove = async () => {
+        setLoadingKvizovi(true);
+        try {
+            const res = await fetch("http://localhost:8000/api/quiz/", {
+                credentials: "include",
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setSpremiKvizovi(data);
+            }
+        } catch {
+        }
+        setLoadingKvizovi(false);
+    };
+
+    useEffect(() => {
+        dohvatiKvizove();
+    }, []);
+
+    const ucitajKviz = (kviz) => {
+        setNaslov(kviz.title);
+        setPrompt(kviz.text);
+        setPitanja([]);
+        setOdabraniOdgovori({});
+        setSavedMsg('');
+        setSidebarOtvoren(false);
+    };
 
     const systemPrompt = `Generate a quiz based on the text.
     Respond ONLY with a JSON array of objects.
@@ -29,14 +65,15 @@ function Quiz() {
         setLoading(true);
         setPitanja([]);
         setOdabraniOdgovori({});
+        setSavedMsg('');
 
         try {
-            const result = await model.generateContent(prompt);
+            const result = await model.generateContent(
+                `Generate exactly ${brojPitanja} questions.\n\n${prompt}`
+            );
             const responseText = result.response.text();
-
             const cleanJson = responseText.replace(/```json|```/g, "");
             const data = JSON.parse(cleanJson);
-
             setPitanja(data);
         } catch (error) {
             console.error("Greška:", error);
@@ -45,46 +82,181 @@ function Quiz() {
         setLoading(false);
     };
 
+    const spremiKviz = async () => {
+        if (!naslov.trim() || !prompt.trim()) {
+            alert("Upiši naslov i tekst prije spremanja.");
+            return;
+        }
+        setSaving(true);
+        setSavedMsg('');
+        try {
+            const response = await fetch("http://localhost:8000/api/quiz/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({ title: naslov.trim(), text: prompt.trim() }),
+            });
+            if (response.ok) {
+                setSavedMsg("Kviz je uspješno spremljen!");
+                dohvatiKvizove();
+            } else {
+                const data = await response.json();
+                setSavedMsg(data.detail || "Greška pri spremanju.");
+            }
+        } catch {
+            setSavedMsg("Mrežna greška. Provjeri je li backend pokrenut.");
+        }
+        setSaving(false);
+    };
+
     const handleOdgovor = (pitanjeIndex, oIndex) => {
-        setOdabraniOdgovori(prev => ({
-            ...prev,
-            [pitanjeIndex]: oIndex
-        }));
+        if (odabraniOdgovori[pitanjeIndex] !== undefined) return;
+
+        const jeTocno = oIndex === pitanja[pitanjeIndex].tocanIndeks;
+        fetch("http://localhost:8000/api/quiz-stats/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ correct: jeTocno ? 1 : 0, wrong: jeTocno ? 0 : 1 }),
+        }).catch(() => { });
+
+        setOdabraniOdgovori(prev => ({ ...prev, [pitanjeIndex]: oIndex }));
+    };
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        setDragging(false);
+        const file = e.dataTransfer.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => setPrompt(ev.target.result);
+        reader.readAsText(file, "UTF-8");
+    };
+
+    const formatirajDatum = (iso) => {
+        const d = new Date(iso);
+        return d.toLocaleDateString('hr-HR', { day: '2-digit', month: '2-digit', year: 'numeric' });
     };
 
     return (
-        <div className="quiz-page">
+        <div className="stranica">
             <Navigation />
 
-            <section className="quiz-generator">
-                <h2 className='quiz-header'>Quiz Generator</h2>
-                <textarea
-                    rows="5"
-                    className="quiz-input"
-                    value={prompt}
-                    onChange={(e) => setPrompt(e.target.value)}
-                    placeholder="Zalijepi tekst iz kojeg želiš kviz..."
+            {sidebarOtvoren && (
+                <div className="zastor" onClick={() => setSidebarOtvoren(false)} />
+            )}
+
+            <aside className={`bocna${sidebarOtvoren ? ' is-open' : ''}`}>
+                <div className="bocna-vrh">
+                    <span className="bocna-naslov">Moji kvizovi</span>
+                    <button className="bocna-zatvori" onClick={() => setSidebarOtvoren(false)}>✕</button>
+                </div>
+                <div className="bocna-tijelo">
+                    {loadingKvizovi ? (
+                        <p className="bocna-prazno">Učitavam...</p>
+                    ) : spremiKvizovi.length === 0 ? (
+                        <p className="bocna-prazno">Nema spremljenih kvizova.</p>
+                    ) : (
+                        spremiKvizovi.map((kviz) => (
+                            <button
+                                key={kviz.id}
+                                className="bocna-stavka"
+                                onClick={() => ucitajKviz(kviz)}
+                            >
+                                <span className="bocna-stavka-naziv">{kviz.title}</span>
+                                <span className="bocna-stavka-datum">{formatirajDatum(kviz.created_at)}</span>
+                            </button>
+                        ))
+                    )}
+                </div>
+            </aside>
+
+            <section className="generator">
+                <div className="red-naslova">
+                    <h2 className='naslov'>Generator kvizova</h2>
+                    <button className="bocna-gumb" onClick={() => setSidebarOtvoren(true)}>
+                        Moji kvizovi
+                    </button>
+                </div>
+                <input
+                    type="text"
+                    className="naslov-unos"
+                    value={naslov}
+                    onChange={(e) => setNaslov(e.target.value)}
+                    placeholder="Naslov kviza..."
                 />
-                <br />
-                <button
-                    onClick={generirajKviz}
-                    disabled={loading}
-                    className="quiz-generate-btn"
+                <div
+                    className={`zona${dragging ? " is-dragging" : ""}`}
+                    onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+                    onDragLeave={() => setDragging(false)}
+                    onDrop={handleDrop}
                 >
-                    {loading ? 'Stvaram kviz...' : 'Generiraj Kviz'}
-                </button>
+                    <textarea
+                        rows="5"
+                        className="unos"
+                        value={prompt}
+                        onChange={(e) => setPrompt(e.target.value)}
+                        placeholder="Zalijepi tekst iz kojeg želiš kviz..."
+                    />
+                    {dragging && (
+                        <div className="sloj">
+                            <ion-icon name="document-text-outline"></ion-icon>
+                            <span>Ispusti fajl ovdje</span>
+                        </div>
+                    )}
+                    <p className="savjet">
+                        <ion-icon name="attach-outline"></ion-icon>
+                        Možeš i povući fajl (.txt, .md, .csv…)
+                    </p>
+                </div>
+                <div className="kontrole">
+                    <div className="omot">
+                        <label className="labela" htmlFor="quiz-num">Broj pitanja</label>
+                        <select
+                            id="quiz-num"
+                            className="padajuci"
+                            value={brojPitanja}
+                            onChange={(e) => setBrojPitanja(Number(e.target.value))}
+                        >
+                            {[5, 10, 15, 20].map(n => (
+                                <option key={n} value={n}>{n}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="akcije">
+                        <button
+                            onClick={generirajKviz}
+                            disabled={loading}
+                            className="generiraj"
+                        >
+                            {loading ? 'Stvaram kviz...' : 'Generiraj Kviz'}
+                        </button>
+                        <button
+                            onClick={spremiKviz}
+                            disabled={saving}
+                            className="spremi"
+                        >
+                            {saving ? 'Spremam...' : 'Spremi'}
+                        </button>
+                    </div>
+                </div>
+                {savedMsg && (
+                    <p className={`poruka ${savedMsg.includes('uspješno') ? 'is-success' : 'is-error'}`}>
+                        {savedMsg}
+                    </p>
+                )}
             </section>
 
-            <section className="quiz-list">
+            <section className="popis">
                 {pitanja.map((p, pIndex) => (
-                    <div key={pIndex} className="quiz-card">
+                    <div key={pIndex} className="kartica">
                         <h4>{pIndex + 1}. {p.pitanje}</h4>
-                        <div className="quiz-options-grid">
+                        <div className="opcije">
                             {p.opcije.map((opcija, oIndex) => {
                                 const jeKliknuto = odabraniOdgovori[pIndex] === oIndex;
                                 const jeTocno = oIndex === p.tocanIndeks;
 
-                                const buttonClasses = ["quiz-option-btn"];
+                                const buttonClasses = ["opcija"];
                                 if (jeKliknuto) {
                                     buttonClasses.push("is-selected");
                                     buttonClasses.push(jeTocno ? "is-correct" : "is-incorrect");
@@ -102,7 +274,7 @@ function Quiz() {
                             })}
                         </div>
                         {odabraniOdgovori[pIndex] !== undefined && (
-                            <p className="quiz-feedback">
+                            <p className="komentar">
                                 {odabraniOdgovori[pIndex] === p.tocanIndeks ? "Točno!" : `Netočno. Točan odgovor je: ${p.opcije[p.tocanIndeks]}`}
                             </p>
                         )}

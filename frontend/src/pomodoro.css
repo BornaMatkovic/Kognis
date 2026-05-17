@@ -1,83 +1,135 @@
-.pomodoroCard {
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+}
+
+.kartica {
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 20px;
-    width: 60vw;
-    height: 60vh;
-    border-radius: 20px;
-
+    gap: clamp(20px, 5vw, 44px);
+    padding: 2rem 1.5rem 160px;
 }
 
-.headingPomodoro {
-    color: white;
-    font-size: 3rem;
-    flex: 0 0 auto;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-    letter-spacing: 2px;
-}
-
-.headingPomodoro h1 {
+.naslov h1 {
     margin: 0;
+    font-size: clamp(0.8rem, 2.5vw, 1rem);
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    size: 30rem;
+    text-transform: uppercase;
+    color: #ffffff;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
-.choosePomodoro {
-    flex: 0 0 auto;
+.odabir {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    padding: 5px;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.12);
 }
 
-.choosePomodoro button,
-.timer button {
-    background: white;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    margin: 20px;
+.odabir button {
+    background: transparent;
     border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-size: 1.2rem;
-    color: #667eea;
+    padding: clamp(7px, 1.5vw, 9px) clamp(14px, 3vw, 22px);
+    border-radius: 50px;
+    font-size: clamp(0.78rem, 2vw, 0.88rem);
+    color: #4f46e5;
     font-weight: 600;
     cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    font-family: inherit;
+    white-space: nowrap;
 }
 
-.timers {
-    flex: 3;
+.odabir button:hover {
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.tajmer {
     display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    max-width: 1200px;
-    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(16px, 3vw, 28px);
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 32px;
+    padding: clamp(2rem, 5vw, 3.5rem) clamp(2.5rem, 8vw, 6rem);
+    box-shadow: 0 8px 40px rgba(99, 102, 241, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
-.timer {
-    background: white;
-    border-radius: 20px;
-    padding: 40px 30px;
-    min-width: 280px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-}
-
-.timer:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-}
-
-.timer h1,
-.timer h2 {
-    font-size: 4rem;
-    margin: 0 0 15px 0;
-    color: #667eea;
-    font-weight: 700;
-    line-height: 1;
-}
-
-.timer p {
-    font-size: 1.2rem;
-    color: #666;
+.tajmer h1 {
     margin: 0;
-    font-weight: 500;
-    letter-spacing: 1px;
+    font-size: clamp(5rem, 22vw, 11rem);
+    font-weight: 700;
+    color: #1e1b4b;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 2px 0 rgba(255, 255, 255, 0.5);
+}
+
+.gumbi {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.gumbi button {
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    padding: clamp(8px, 1.5vw, 11px) clamp(18px, 4vw, 30px);
+    border-radius: 50px;
+    font-size: clamp(0.78rem, 2vw, 0.88rem);
+    color: #4f46e5;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+    font-family: inherit;
+}
+
+.gumbi button:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.2);
+    transform: translateY(-1px);
+}
+
+.gumbi button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.gumbi button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+@media (max-width: 380px) {
+    .tajmer {
+        padding: 1.8rem 1.5rem;
+        border-radius: 24px;
+    }
+
+    .tajmer h1 {
+        font-size: 4.5rem;
+    }
 }
