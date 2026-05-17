@@ -1,9 +1,9 @@
-.homePage {
+.pocetna {
     position: fixed;
     inset: 0;
 }
 
-.homeBackground {
+.pozadina {
     width: 100%;
     height: 100%;
     background-size: cover;

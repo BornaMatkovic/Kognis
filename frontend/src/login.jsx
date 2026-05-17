@@ -41,7 +41,7 @@ function Login() {
 
     return (
         <>
-            <div className="LoginCard">
+            <div className="prijava">
                 <h1>LOGIN</h1>
                 <form onSubmit={prijava}>
                     <input
@@ -60,7 +60,7 @@ function Login() {
                     />
                     {greska && <div style={{ color: "red", margin: "10px 0" }}>{greska}</div>}
                     <span
-                        className="registerJump"
+                        className="na-registraciju"
                         onClick={() => navigate("/register")}
                         style={{ cursor: "pointer", color: "blue" }}
                     >

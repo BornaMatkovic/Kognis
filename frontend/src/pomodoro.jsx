@@ -177,19 +177,19 @@ function Pomodoro() {
 
     return (
         <>
-            <div className="pomodoroCard" style={{ background: gradijentPozadine() }}>
-                <div className="headingPomodoro">
+            <div className="kartica" style={{ background: gradijentPozadine() }}>
+                <div className="naslov">
                     <h1>POMODORO TAJMERI</h1>
                 </div>
 
-                <div className="choosePomodoro">
+                <div className="odabir">
                     <button onClick={pokreniPomodoro}>pomodoro</button>
                     <button onClick={pokreniKratkuPauzu}>kratka pauza</button>
                     <button onClick={pokreniDuguPauzu}>duga pauza</button>
                 </div>
-                <div className="timer">
+                <div className="tajmer">
                     <h1>{formatirajVrijeme(vrijemePreostalo)}</h1>
-                    <div className="timer-controls">
+                    <div className="gumbi">
                         <button onClick={pokreni} disabled={aktivan}>KRENI</button>
                         <button onClick={zaustavi} disabled={!aktivan}>STANI</button>
                         <button onClick={resetiraj}>RESET</button>

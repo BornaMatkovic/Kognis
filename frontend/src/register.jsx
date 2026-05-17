@@ -39,7 +39,7 @@ function Register() {
     };
 
     return (
-        <div className="LoginCard">
+        <div className="prijava">
             <h1>REGISTER</h1>
             <form onSubmit={registracija}>
                 <input

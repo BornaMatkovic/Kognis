@@ -13,7 +13,7 @@ body {
     padding: 1.5rem 1rem 160px;
 }
 
-.profile-loading {
+.ucitavanje {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -23,7 +23,7 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
 }
 
-.ProfileCard {
+.profil {
     width: min(92vw, 380px);
     border-radius: 24px;
     overflow: hidden;
@@ -31,7 +31,7 @@ body {
     box-shadow: 0 8px 40px rgba(99, 102, 241, 0.15), 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
-.profile-header {
+.zaglavlje {
     background: linear-gradient(135deg, #6366f1 0%, #7c3aed 100%);
     padding: 2rem 1.5rem 1.6rem;
     display: flex;
@@ -40,7 +40,7 @@ body {
     gap: 0.75rem;
 }
 
-.profile-avatar {
+.avatar {
     width: 70px;
     height: 70px;
     border-radius: 50%;
@@ -54,21 +54,21 @@ body {
     color: white;
 }
 
-.profile-username {
+.ime {
     color: rgba(255, 255, 255, 0.9);
     font-size: 1rem;
     font-weight: 600;
     letter-spacing: 0.02em;
 }
 
-.profile-body {
+.sadrzaj {
     padding: 1.3rem 1.4rem 1.5rem;
     display: flex;
     flex-direction: column;
     gap: 0.55rem;
 }
 
-.stat-row {
+.redak {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -78,7 +78,7 @@ body {
     border: 1px solid #ede9fe;
 }
 
-.stat-label {
+.oznaka {
     font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -86,7 +86,7 @@ body {
     color: #7c3aed;
 }
 
-.stat-value {
+.vrijednost {
     font-size: 0.88rem;
     font-weight: 500;
     color: #1e1b4b;
@@ -97,13 +97,13 @@ body {
     white-space: nowrap;
 }
 
-.score-row .stat-value {
+.bodovi .vrijednost {
     font-size: 1.05rem;
     font-weight: 700;
     color: #6366f1;
 }
 
-.logout-btn {
+.odjava {
     margin-top: 0.5rem;
     width: 100%;
     border: none;
@@ -118,10 +118,10 @@ body {
     transition: background 0.2s, transform 0.12s;
 }
 
-.logout-btn:hover {
+.odjava:hover {
     background: #dc2626;
 }
 
-.logout-btn:active {
+.odjava:active {
     transform: scale(0.99);
 }

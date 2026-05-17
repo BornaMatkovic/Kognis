@@ -13,7 +13,7 @@ body {
     padding: 2.5rem 2rem 180px;
 }
 
-.stats-loading {
+.stat-cekanje {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -24,13 +24,13 @@ body {
     gap: 0.6rem;
 }
 
-.stats-page {
+.stat-stranica {
     width: 100%;
     max-width: none;
     margin: 0 auto;
 }
 
-.stats-title {
+.stat-naslov {
     font-size: 2.1rem;
     font-weight: 900;
     background: linear-gradient(120deg, #4f46e5 0%, #7c3aed 60%, #a855f7 100%);
@@ -41,39 +41,39 @@ body {
     letter-spacing: -0.03em;
 }
 
-.stats-grid {
+.stat-mreza {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
     gap: 1.3rem;
     width: 100%;
 }
 
-.stats-card--accuracy {
+.stat-karta--tocnost {
     grid-column: 1 / span 8;
     grid-row: 1;
 }
 
-.stats-card--score {
+.stat-karta--bodovi {
     grid-column: 9 / span 4;
     grid-row: 1;
 }
 
-.stats-card--pie {
+.stat-karta--pita {
     grid-column: 1 / span 6;
     grid-row: 2;
 }
 
-.stats-card--bar {
+.stat-karta--stupci {
     grid-column: 7 / span 6;
     grid-row: 2;
 }
 
-.stats-card--pomodoro {
+.stat-karta--pomo {
     grid-column: 1 / span 12;
     grid-row: 3;
 }
 
-.stats-card {
+.stat-karta {
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -91,7 +91,7 @@ body {
     overflow: hidden;
 }
 
-.stats-card::before {
+.stat-karta::before {
     content: "";
     position: absolute;
     top: 0;
@@ -102,7 +102,7 @@ body {
     border-radius: 24px 24px 0 0;
 }
 
-.stats-card:hover {
+.stat-karta:hover {
     transform: translateY(-4px);
     box-shadow:
         0 2px 0 0 rgba(99, 102, 241, 0.08) inset,
@@ -110,7 +110,7 @@ body {
         0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
-.stats-card--score {
+.stat-karta--bodovi {
     background: linear-gradient(145deg, #6366f1 0%, #7c3aed 60%, #9333ea 100%);
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow:
@@ -120,21 +120,21 @@ body {
     justify-content: center;
 }
 
-.stats-card--score::before {
+.stat-karta--bodovi::before {
     background: rgba(255, 255, 255, 0.2);
 }
 
-.stats-card--score:hover {
+.stat-karta--bodovi:hover {
     box-shadow:
         0 16px 48px rgba(99, 102, 241, 0.5),
         0 4px 12px rgba(99, 102, 241, 0.35);
 }
 
-.stats-card--score .stats-card-title {
+.stat-karta--bodovi .stat-karta-naslov {
     color: rgba(255, 255, 255, 0.7);
 }
 
-.stats-score-value {
+.bodovi-broj {
     font-size: 3.6rem;
     font-weight: 900;
     color: #fff;
@@ -144,7 +144,7 @@ body {
     text-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
 }
 
-.stats-score-sub {
+.bodovi-pod {
     font-size: 0.78rem;
     font-weight: 500;
     color: rgba(255, 255, 255, 0.65);
@@ -153,7 +153,7 @@ body {
     text-transform: uppercase;
 }
 
-.stats-card-title {
+.stat-karta-naslov {
     display: flex;
     align-items: center;
     gap: 0.45rem;
@@ -165,7 +165,7 @@ body {
     margin: 0 0 1.2rem;
 }
 
-.stats-card-title::before {
+.stat-karta-naslov::before {
     content: "";
     display: inline-block;
     width: 6px;
@@ -175,7 +175,7 @@ body {
     flex-shrink: 0;
 }
 
-.stats-accuracy-wrap {
+.tocnost-omot {
     position: relative;
     width: 100%;
     display: flex;
@@ -183,7 +183,7 @@ body {
     justify-content: center;
 }
 
-.stats-accuracy-label {
+.tocnost-oznaka {
     position: absolute;
     display: flex;
     flex-direction: column;
@@ -191,7 +191,7 @@ body {
     pointer-events: none;
 }
 
-.stats-accuracy-pct {
+.tocnost-posto {
     font-size: 2.6rem;
     font-weight: 900;
     background: linear-gradient(135deg, #4f46e5, #7c3aed);
@@ -202,17 +202,17 @@ body {
     letter-spacing: -0.03em;
 }
 
-.stats-accuracy-sub {
+.tocnost-pod {
     font-size: 0.7rem;
     color: #9ca3af;
     margin-top: 0.35rem;
     font-weight: 500;
 }
 
-.stats-card--accuracy::after,
-.stats-card--pie::after,
-.stats-card--bar::after,
-.stats-card--pomodoro::after {
+.stat-karta--tocnost::after,
+.stat-karta--pita::after,
+.stat-karta--stupci::after,
+.stat-karta--pomo::after {
     content: "";
     position: absolute;
     bottom: -40px;
@@ -229,19 +229,19 @@ body {
         padding: 1.5rem 1rem 180px;
     }
 
-    .stats-title {
+    .stat-naslov {
         font-size: 1.6rem;
     }
 
-    .stats-grid {
+    .stat-mreza {
         grid-template-columns: 1fr;
     }
 
-    .stats-card--accuracy,
-    .stats-card--score,
-    .stats-card--pie,
-    .stats-card--bar,
-    .stats-card--pomodoro {
+    .stat-karta--tocnost,
+    .stat-karta--bodovi,
+    .stat-karta--pita,
+    .stat-karta--stupci,
+    .stat-karta--pomo {
         grid-column: 1;
         grid-row: auto;
     }

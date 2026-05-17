@@ -139,82 +139,82 @@ function Quiz() {
     };
 
     return (
-        <div className="quiz-page">
+        <div className="stranica">
             <Navigation />
 
             {sidebarOtvoren && (
-                <div className="quiz-sidebar-backdrop" onClick={() => setSidebarOtvoren(false)} />
+                <div className="zastor" onClick={() => setSidebarOtvoren(false)} />
             )}
 
-            <aside className={`quiz-sidebar${sidebarOtvoren ? ' is-open' : ''}`}>
-                <div className="quiz-sidebar-header">
-                    <span className="quiz-sidebar-title">Moji kvizovi</span>
-                    <button className="quiz-sidebar-close" onClick={() => setSidebarOtvoren(false)}>✕</button>
+            <aside className={`bocna${sidebarOtvoren ? ' is-open' : ''}`}>
+                <div className="bocna-vrh">
+                    <span className="bocna-naslov">Moji kvizovi</span>
+                    <button className="bocna-zatvori" onClick={() => setSidebarOtvoren(false)}>✕</button>
                 </div>
-                <div className="quiz-sidebar-body">
+                <div className="bocna-tijelo">
                     {loadingKvizovi ? (
-                        <p className="quiz-sidebar-empty">Učitavam...</p>
+                        <p className="bocna-prazno">Učitavam...</p>
                     ) : spremiKvizovi.length === 0 ? (
-                        <p className="quiz-sidebar-empty">Nema spremljenih kvizova.</p>
+                        <p className="bocna-prazno">Nema spremljenih kvizova.</p>
                     ) : (
                         spremiKvizovi.map((kviz) => (
                             <button
                                 key={kviz.id}
-                                className="quiz-sidebar-item"
+                                className="bocna-stavka"
                                 onClick={() => ucitajKviz(kviz)}
                             >
-                                <span className="quiz-sidebar-item-title">{kviz.title}</span>
-                                <span className="quiz-sidebar-item-date">{formatirajDatum(kviz.created_at)}</span>
+                                <span className="bocna-stavka-naziv">{kviz.title}</span>
+                                <span className="bocna-stavka-datum">{formatirajDatum(kviz.created_at)}</span>
                             </button>
                         ))
                     )}
                 </div>
             </aside>
 
-            <section className="quiz-generator">
-                <div className="quiz-header-row">
-                    <h2 className='quiz-header'>Generator kvizova</h2>
-                    <button className="quiz-sidebar-toggle" onClick={() => setSidebarOtvoren(true)}>
+            <section className="generator">
+                <div className="red-naslova">
+                    <h2 className='naslov'>Generator kvizova</h2>
+                    <button className="bocna-gumb" onClick={() => setSidebarOtvoren(true)}>
                         Moji kvizovi
                     </button>
                 </div>
                 <input
                     type="text"
-                    className="quiz-title-input"
+                    className="naslov-unos"
                     value={naslov}
                     onChange={(e) => setNaslov(e.target.value)}
                     placeholder="Naslov kviza..."
                 />
                 <div
-                    className={`quiz-drop-zone${dragging ? " is-dragging" : ""}`}
+                    className={`zona${dragging ? " is-dragging" : ""}`}
                     onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
                     onDragLeave={() => setDragging(false)}
                     onDrop={handleDrop}
                 >
                     <textarea
                         rows="5"
-                        className="quiz-input"
+                        className="unos"
                         value={prompt}
                         onChange={(e) => setPrompt(e.target.value)}
                         placeholder="Zalijepi tekst iz kojeg želiš kviz..."
                     />
                     {dragging && (
-                        <div className="quiz-drop-overlay">
+                        <div className="sloj">
                             <ion-icon name="document-text-outline"></ion-icon>
                             <span>Ispusti fajl ovdje</span>
                         </div>
                     )}
-                    <p className="quiz-drop-hint">
+                    <p className="savjet">
                         <ion-icon name="attach-outline"></ion-icon>
                         Možeš i povući fajl (.txt, .md, .csv…)
                     </p>
                 </div>
-                <div className="quiz-controls">
-                    <div className="quiz-select-wrap">
-                        <label className="quiz-select-label" htmlFor="quiz-num">Broj pitanja</label>
+                <div className="kontrole">
+                    <div className="omot">
+                        <label className="labela" htmlFor="quiz-num">Broj pitanja</label>
                         <select
                             id="quiz-num"
-                            className="quiz-select"
+                            className="padajuci"
                             value={brojPitanja}
                             onChange={(e) => setBrojPitanja(Number(e.target.value))}
                         >
@@ -223,40 +223,40 @@ function Quiz() {
                             ))}
                         </select>
                     </div>
-                    <div className="quiz-actions">
+                    <div className="akcije">
                         <button
                             onClick={generirajKviz}
                             disabled={loading}
-                            className="quiz-generate-btn"
+                            className="generiraj"
                         >
                             {loading ? 'Stvaram kviz...' : 'Generiraj Kviz'}
                         </button>
                         <button
                             onClick={spremiKviz}
                             disabled={saving}
-                            className="quiz-save-btn"
+                            className="spremi"
                         >
                             {saving ? 'Spremam...' : 'Spremi'}
                         </button>
                     </div>
                 </div>
                 {savedMsg && (
-                    <p className={`quiz-save-msg ${savedMsg.includes('uspješno') ? 'is-success' : 'is-error'}`}>
+                    <p className={`poruka ${savedMsg.includes('uspješno') ? 'is-success' : 'is-error'}`}>
                         {savedMsg}
                     </p>
                 )}
             </section>
 
-            <section className="quiz-list">
+            <section className="popis">
                 {pitanja.map((p, pIndex) => (
-                    <div key={pIndex} className="quiz-card">
+                    <div key={pIndex} className="kartica">
                         <h4>{pIndex + 1}. {p.pitanje}</h4>
-                        <div className="quiz-options-grid">
+                        <div className="opcije">
                             {p.opcije.map((opcija, oIndex) => {
                                 const jeKliknuto = odabraniOdgovori[pIndex] === oIndex;
                                 const jeTocno = oIndex === p.tocanIndeks;
 
-                                const buttonClasses = ["quiz-option-btn"];
+                                const buttonClasses = ["opcija"];
                                 if (jeKliknuto) {
                                     buttonClasses.push("is-selected");
                                     buttonClasses.push(jeTocno ? "is-correct" : "is-incorrect");
@@ -274,7 +274,7 @@ function Quiz() {
                             })}
                         </div>
                         {odabraniOdgovori[pIndex] !== undefined && (
-                            <p className="quiz-feedback">
+                            <p className="komentar">
                                 {odabraniOdgovori[pIndex] === p.tocanIndeks ? "Točno!" : `Netočno. Točan odgovor je: ${p.opcije[p.tocanIndeks]}`}
                             </p>
                         )}

@@ -33,7 +33,7 @@ function Statistics() {
         ucitajStatistiku();
     }, []);
 
-    if (ucitavam) return <div className="stats-loading">Učitavam statistiku...</div>;
+    if (ucitavam) return <div className="stat-cekanje">Učitavam statistiku...</div>;
     if (!korisnik) return null;
 
     const { quiz_correct, quiz_wrong, score, timer_minutes, timer_interrupts } = korisnik;
@@ -64,13 +64,13 @@ function Statistics() {
     ];
 
     return (
-        <div className="stats-page">
-            <h1 className="stats-title">Statistika</h1>
+        <div className="stat-stranica">
+            <h1 className="stat-naslov">Statistika</h1>
 
-            <div className="stats-grid">
-                <div className="stats-card stats-card--accuracy">
-                    <h2 className="stats-card-title">Točnost odgovora</h2>
-                    <div className="stats-accuracy-wrap">
+            <div className="stat-mreza">
+                <div className="stat-karta stat-karta--tocnost">
+                    <h2 className="stat-karta-naslov">Točnost odgovora</h2>
+                    <div className="tocnost-omot">
                         <ResponsiveContainer width="100%" height={260}>
                             <PieChart>
                                 <Pie
@@ -90,21 +90,21 @@ function Statistics() {
                                 </Pie>
                             </PieChart>
                         </ResponsiveContainer>
-                        <div className="stats-accuracy-label">
-                            <span className="stats-accuracy-pct">{tocnost}%</span>
-                            <span className="stats-accuracy-sub">{ukupnoOdgovora} odgovora ukupno</span>
+                        <div className="tocnost-oznaka">
+                            <span className="tocnost-posto">{tocnost}%</span>
+                            <span className="tocnost-pod">{ukupnoOdgovora} odgovora ukupno</span>
                         </div>
                     </div>
                 </div>
 
-                <div className="stats-card stats-card--score">
-                    <h2 className="stats-card-title">Bodovi</h2>
-                    <div className="stats-score-value">{score}</div>
-                    <div className="stats-score-sub">bodova</div>
+                <div className="stat-karta stat-karta--bodovi">
+                    <h2 className="stat-karta-naslov">Bodovi</h2>
+                    <div className="bodovi-broj">{score}</div>
+                    <div className="bodovi-pod">bodova</div>
                 </div>
 
-                <div className="stats-card stats-card--pie">
-                    <h2 className="stats-card-title">Točni vs Netočni odgovori</h2>
+                <div className="stat-karta stat-karta--pita">
+                    <h2 className="stat-karta-naslov">Točni vs Netočni odgovori</h2>
                     <ResponsiveContainer width="100%" height={280}>
                         <PieChart>
                             <Pie
@@ -128,8 +128,8 @@ function Statistics() {
                     </ResponsiveContainer>
                 </div>
 
-                <div className="stats-card stats-card--bar">
-                    <h2 className="stats-card-title">Pregled odgovora</h2>
+                <div className="stat-karta stat-karta--stupci">
+                    <h2 className="stat-karta-naslov">Pregled odgovora</h2>
                     <ResponsiveContainer width="100%" height={260}>
                         <BarChart data={podaciStupci} barSize={44}>
                             <XAxis dataKey="name" tick={{ fontSize: 13, fill: "#6b7280" }} />
@@ -147,8 +147,8 @@ function Statistics() {
                     </ResponsiveContainer>
                 </div>
 
-                <div className="stats-card stats-card--pomodoro">
-                    <h2 className="stats-card-title">Pomodoro</h2>
+                <div className="stat-karta stat-karta--pomo">
+                    <h2 className="stat-karta-naslov">Pomodoro</h2>
                     <ResponsiveContainer width="100%" height={260}>
                         <BarChart data={podaciPomodoro} barSize={44}>
                             <XAxis dataKey="name" tick={{ fontSize: 13, fill: "#6b7280" }} />

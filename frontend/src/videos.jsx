@@ -40,64 +40,64 @@ function Videos() {
 
     return (
         <>
-            <div className="videos-page">
-                <h1 className="videos-title">VIDEO LEKCIJE</h1>
+            <div className="videi">
+                <h1 className="natpis">VIDEO LEKCIJE</h1>
 
-                <form className="videos-search-wrap" onSubmit={pretrazi}>
+                <form className="pretraga" onSubmit={pretrazi}>
                     <input
-                        className="videos-input"
+                        className="trazilica"
                         type="text"
                         placeholder="Unesi temu za učenje…"
                         value={tema}
                         onChange={(e) => setTema(e.target.value)}
                     />
-                    <button className="videos-btn" type="submit" disabled={ucitavam || !tema.trim()}>
+                    <button className="gumb" type="submit" disabled={ucitavam || !tema.trim()}>
                         {ucitavam ? "Tražim…" : "Pretraži"}
                     </button>
                 </form>
 
-                {greska && <p className="videos-error">{greska}</p>}
+                {greska && <p className="greska">{greska}</p>}
 
                 {!pretrazeno && !ucitavam && (
-                    <div className="videos-empty">
-                        <ion-icon name="videocam-outline" class="videos-empty-icon"></ion-icon>
+                    <div className="prazno">
+                        <ion-icon name="videocam-outline" class="prazno-ikona"></ion-icon>
                         <p>Upiši temu i pronađi edukativne videe</p>
                     </div>
                 )}
 
                 {ucitavam && (
-                    <div className="videos-loading">
-                        <div className="videos-spinner"></div>
+                    <div className="punjenje">
+                        <div className="tocak"></div>
                         <p>Tražim videe…</p>
                     </div>
                 )}
 
                 {videi.length > 0 && (
-                    <div className="videos-grid">
+                    <div className="mreza">
                         {videi.map((v) => {
                             const id = v.id.videoId;
                             const { title, channelTitle, thumbnails } = v.snippet;
                             return (
                                 <a
                                     key={id}
-                                    className="video-card"
+                                    className="plocica"
                                     href={`https://www.youtube.com/watch?v=${id}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
-                                    <div className="video-thumb-wrap">
+                                    <div className="slicica-omot">
                                         <img
-                                            className="video-thumb"
+                                            className="slicica"
                                             src={thumbnails.medium.url}
                                             alt={title}
                                         />
-                                        <div className="video-play">
+                                        <div className="pokretanje">
                                             <ion-icon name="play-circle-outline"></ion-icon>
                                         </div>
                                     </div>
-                                    <div className="video-info">
-                                        <p className="video-title">{title}</p>
-                                        <p className="video-channel">{channelTitle}</p>
+                                    <div className="info">
+                                        <p className="naziv">{title}</p>
+                                        <p className="kanal">{channelTitle}</p>
                                     </div>
                                 </a>
                             );
@@ -106,7 +106,7 @@ function Videos() {
                 )}
 
                 {pretrazeno && videi.length === 0 && !ucitavam && !greska && (
-                    <p className="videos-no-results">Nema rezultata za "{tema}".</p>
+                    <p className="bez-rezultata">Nema rezultata za "{tema}".</p>
                 )}
             </div>
 

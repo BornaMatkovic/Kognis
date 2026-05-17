@@ -9,17 +9,17 @@ body {
     color: #1e1b4b;
 }
 
-.quiz-page {
+.stranica {
     max-width: 720px;
     margin: 0 auto;
     padding: clamp(1.5rem, 5vw, 2.5rem) clamp(1rem, 4vw, 1.5rem) 160px;
 }
 
-.quiz-generator {
+.generator {
     margin-bottom: 2rem;
 }
 
-.quiz-header {
+.naslov {
     font-size: clamp(1.6rem, 5vw, 2.2rem);
     font-weight: 700;
     color: #1e1b4b;
@@ -27,7 +27,7 @@ body {
     letter-spacing: -0.01em;
 }
 
-.quiz-input {
+.unos {
     width: 100%;
     padding: clamp(0.8rem, 2vw, 1rem);
     border-radius: 14px;
@@ -42,17 +42,17 @@ body {
     box-shadow: 0 2px 8px rgba(99, 102, 241, 0.06);
 }
 
-.quiz-input:focus {
+.unos:focus {
     outline: none;
     border-color: #6366f1;
     box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
 }
 
-.quiz-input::placeholder {
+.unos::placeholder {
     color: #a5b4fc;
 }
 
-.quiz-title-input {
+.naslov-unos {
     width: 100%;
     padding: clamp(0.7rem, 2vw, 0.88rem) clamp(0.8rem, 2vw, 1rem);
     border-radius: 14px;
@@ -67,29 +67,29 @@ body {
     box-shadow: 0 2px 8px rgba(99, 102, 241, 0.06);
 }
 
-.quiz-title-input:focus {
+.naslov-unos:focus {
     outline: none;
     border-color: #6366f1;
     box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
 }
 
-.quiz-title-input::placeholder {
+.naslov-unos::placeholder {
     color: #a5b4fc;
     font-weight: 400;
 }
 
-.quiz-drop-zone {
+.zona {
     position: relative;
     margin-bottom: 0;
 }
 
-.quiz-drop-zone.is-dragging .quiz-input {
+.zona.is-dragging .unos {
     border-color: #6366f1;
     box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
     opacity: 0.4;
 }
 
-.quiz-drop-overlay {
+.sloj {
     position: absolute;
     inset: 0;
     bottom: 22px;
@@ -107,11 +107,11 @@ body {
     pointer-events: none;
 }
 
-.quiz-drop-overlay ion-icon {
+.sloj ion-icon {
     font-size: 2.2rem;
 }
 
-.quiz-drop-hint {
+.savjet {
     display: flex;
     align-items: center;
     gap: 0.3rem;
@@ -121,12 +121,12 @@ body {
     font-weight: 400;
 }
 
-.quiz-drop-hint ion-icon {
+.savjet ion-icon {
     font-size: 0.9rem;
     flex-shrink: 0;
 }
 
-.quiz-controls {
+.kontrole {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -135,20 +135,20 @@ body {
     margin-top: 0.6rem;
 }
 
-.quiz-select-wrap {
+.omot {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.quiz-select-label {
+.labela {
     font-size: clamp(0.82rem, 2vw, 0.88rem);
     font-weight: 500;
     color: #6b7280;
     white-space: nowrap;
 }
 
-.quiz-select {
+.padajuci {
     padding: 0.5rem 0.75rem;
     border-radius: 10px;
     border: 1.5px solid #ddd6fe;
@@ -161,19 +161,19 @@ body {
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.quiz-select:focus {
+.padajuci:focus {
     outline: none;
     border-color: #6366f1;
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
 }
 
-.quiz-actions {
+.akcije {
     display: flex;
     gap: 0.6rem;
     flex-wrap: wrap;
 }
 
-.quiz-generate-btn {
+.generiraj {
     padding: clamp(0.75rem, 2vw, 0.88rem) clamp(1.8rem, 5vw, 2.5rem);
     background: linear-gradient(135deg, #6366f1 0%, #7c3aed 100%);
     color: white;
@@ -187,23 +187,23 @@ body {
     box-shadow: 0 4px 20px rgba(99, 102, 241, 0.35);
 }
 
-.quiz-generate-btn:hover:not(:disabled) {
+.generiraj:hover:not(:disabled) {
     opacity: 0.9;
     transform: translateY(-1px);
     box-shadow: 0 6px 24px rgba(99, 102, 241, 0.45);
 }
 
-.quiz-generate-btn:active:not(:disabled) {
+.generiraj:active:not(:disabled) {
     transform: translateY(0);
 }
 
-.quiz-generate-btn:disabled {
+.generiraj:disabled {
     opacity: 0.5;
     cursor: not-allowed;
     box-shadow: none;
 }
 
-.quiz-save-btn {
+.spremi {
     padding: clamp(0.75rem, 2vw, 0.88rem) clamp(1.4rem, 4vw, 2rem);
     background: white;
     color: #6366f1;
@@ -216,22 +216,22 @@ body {
     transition: background 0.2s, color 0.2s, transform 0.15s, box-shadow 0.2s;
 }
 
-.quiz-save-btn:hover:not(:disabled) {
+.spremi:hover:not(:disabled) {
     background: #eef2ff;
     transform: translateY(-1px);
     box-shadow: 0 4px 14px rgba(99, 102, 241, 0.2);
 }
 
-.quiz-save-btn:active:not(:disabled) {
+.spremi:active:not(:disabled) {
     transform: translateY(0);
 }
 
-.quiz-save-btn:disabled {
+.spremi:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }
 
-.quiz-save-msg {
+.poruka {
     margin-top: 0.65rem;
     font-size: clamp(0.82rem, 2vw, 0.88rem);
     font-weight: 500;
@@ -239,30 +239,30 @@ body {
     border-radius: 10px;
 }
 
-.quiz-save-msg.is-success {
+.poruka.is-success {
     background: #f0fdf4;
     color: #15803d;
     border: 1px solid #bbf7d0;
 }
 
-.quiz-save-msg.is-error {
+.poruka.is-error {
     background: #fef2f2;
     color: #b91c1c;
     border: 1px solid #fecaca;
 }
 
-.quiz-header-row {
+.red-naslova {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 1.2rem;
 }
 
-.quiz-header-row .quiz-header {
+.red-naslova .naslov {
     margin: 0;
 }
 
-.quiz-sidebar-toggle {
+.bocna-gumb {
     padding: 0.45rem 1rem;
     background: white;
     color: #6366f1;
@@ -276,13 +276,13 @@ body {
     white-space: nowrap;
 }
 
-.quiz-sidebar-toggle:hover {
+.bocna-gumb:hover {
     background: #eef2ff;
     border-color: #6366f1;
     box-shadow: 0 2px 10px rgba(99, 102, 241, 0.15);
 }
 
-.quiz-sidebar-backdrop {
+.zastor {
     position: fixed;
     inset: 0;
     background: rgba(30, 27, 75, 0.25);
@@ -290,7 +290,7 @@ body {
     backdrop-filter: blur(2px);
 }
 
-.quiz-sidebar {
+.bocna {
     position: fixed;
     top: 0;
     left: 0;
@@ -305,11 +305,11 @@ body {
     transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.quiz-sidebar.is-open {
+.bocna.is-open {
     transform: translateX(0);
 }
 
-.quiz-sidebar-header {
+.bocna-vrh {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -318,13 +318,13 @@ body {
     flex-shrink: 0;
 }
 
-.quiz-sidebar-title {
+.bocna-naslov {
     font-size: 1rem;
     font-weight: 700;
     color: #1e1b4b;
 }
 
-.quiz-sidebar-close {
+.bocna-zatvori {
     background: none;
     border: none;
     font-size: 1rem;
@@ -336,18 +336,18 @@ body {
     line-height: 1;
 }
 
-.quiz-sidebar-close:hover {
+.bocna-zatvori:hover {
     color: #6366f1;
     background: #eef2ff;
 }
 
-.quiz-sidebar-body {
+.bocna-tijelo {
     flex: 1;
     overflow-y: auto;
     padding: 0.6rem 0.6rem;
 }
 
-.quiz-sidebar-empty {
+.bocna-prazno {
     font-size: 0.88rem;
     color: #a5b4fc;
     text-align: center;
@@ -355,7 +355,7 @@ body {
     margin: 0;
 }
 
-.quiz-sidebar-item {
+.bocna-stavka {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -370,11 +370,11 @@ body {
     transition: background 0.15s;
 }
 
-.quiz-sidebar-item:hover {
+.bocna-stavka:hover {
     background: #f5f4ff;
 }
 
-.quiz-sidebar-item-title {
+.bocna-stavka-naziv {
     font-size: 0.9rem;
     font-weight: 600;
     color: #1e1b4b;
@@ -382,19 +382,19 @@ body {
     word-break: break-word;
 }
 
-.quiz-sidebar-item-date {
+.bocna-stavka-datum {
     font-size: 0.76rem;
     color: #a5b4fc;
     font-weight: 400;
 }
 
-.quiz-list {
+.popis {
     display: flex;
     flex-direction: column;
     gap: 14px;
 }
 
-.quiz-card {
+.kartica {
     background: white;
     border-radius: 16px;
     padding: clamp(1rem, 3vw, 1.3rem) clamp(1rem, 3vw, 1.4rem);
@@ -402,7 +402,7 @@ body {
     border: 1px solid #ede9fe;
 }
 
-.quiz-card h4 {
+.kartica h4 {
     margin: 0 0 0.9rem;
     font-size: clamp(0.88rem, 2.5vw, 0.95rem);
     font-weight: 600;
@@ -410,13 +410,13 @@ body {
     color: #1e1b4b;
 }
 
-.quiz-options-grid {
+.opcije {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 8px;
 }
 
-.quiz-option-btn {
+.opcija {
     padding: clamp(0.6rem, 1.5vw, 0.72rem) clamp(0.7rem, 2vw, 0.9rem);
     cursor: pointer;
     border: 1.5px solid #ddd6fe;
@@ -431,29 +431,29 @@ body {
     transition: border-color 0.2s, background 0.2s, transform 0.12s;
 }
 
-.quiz-option-btn:hover:not(.is-selected) {
+.opcija:hover:not(.is-selected) {
     border-color: #6366f1;
     background: #eef2ff;
     transform: translateY(-1px);
 }
 
-.quiz-option-btn.is-selected {
+.opcija.is-selected {
     font-weight: 600;
 }
 
-.quiz-option-btn.is-correct {
+.opcija.is-correct {
     background: #f0fdf4;
     border-color: #22c55e;
     color: #15803d;
 }
 
-.quiz-option-btn.is-incorrect {
+.opcija.is-incorrect {
     background: #fef2f2;
     border-color: #ef4444;
     color: #b91c1c;
 }
 
-.quiz-feedback {
+.komentar {
     font-size: clamp(0.8rem, 2vw, 0.86rem);
     margin-top: 0.75rem;
     color: #6b7280;
@@ -463,7 +463,7 @@ body {
 }
 
 @media (max-width: 500px) {
-    .quiz-options-grid {
+    .opcije {
         grid-template-columns: 1fr;
     }
 }

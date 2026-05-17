@@ -45,7 +45,7 @@ function Profile() {
         navigate("/login", { replace: true });
     };
 
-    if (ucitavam) return <div className="profile-loading">Učitavam...</div>;
+    if (ucitavam) return <div className="ucitavanje">Učitavam...</div>;
     if (!korisnik) return null;
 
     let rank
@@ -57,25 +57,25 @@ function Profile() {
 
     return (
         <>
-            <div className="ProfileCard">
-                <div className="profile-header">
-                    <div className="profile-avatar">{korisnik.username[0].toUpperCase()}</div>
-                    <span className="profile-username">{korisnik.username}</span>
+            <div className="profil">
+                <div className="zaglavlje">
+                    <div className="avatar">{korisnik.username[0].toUpperCase()}</div>
+                    <span className="ime">{korisnik.username}</span>
                 </div>
-                <div className="profile-body">
-                    <div className="stat-row">
-                        <span className="stat-label">Email</span>
-                        <span className="stat-value">{korisnik.email}</span>
+                <div className="sadrzaj">
+                    <div className="redak">
+                        <span className="oznaka">Email</span>
+                        <span className="vrijednost">{korisnik.email}</span>
                     </div>
-                    <div className="stat-row">
-                        <span className="stat-label">Rank</span>
-                        <span className="stat-value">{rank}</span>
+                    <div className="redak">
+                        <span className="oznaka">Rank</span>
+                        <span className="vrijednost">{rank}</span>
                     </div>
-                    <div className="stat-row score-row">
-                        <span className="stat-label">Bodovi</span>
-                        <span className="stat-value">{korisnik.score}</span>
+                    <div className="redak bodovi">
+                        <span className="oznaka">Bodovi</span>
+                        <span className="vrijednost">{korisnik.score}</span>
                     </div>
-                    <button className="logout-btn" onClick={odjava}>Odjava</button>
+                    <button className="odjava" onClick={odjava}>Odjava</button>
                 </div>
             </div>
             <Navigation />

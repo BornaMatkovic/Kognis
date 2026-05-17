@@ -14,9 +14,9 @@ function Home() {
 
     return (
         <>
-            <div className="homePage">
+            <div className="pocetna">
                 <div
-                    className="homeBackground"
+                    className="pozadina"
                     style={{ backgroundImage: `url(${bg})` }}
                 >
                     Content

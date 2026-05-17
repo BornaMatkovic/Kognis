@@ -7,7 +7,7 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
 }
 
-.pomodoroCard {
+.kartica {
     min-height: 100dvh;
     display: flex;
     flex-direction: column;
@@ -17,7 +17,7 @@ body {
     padding: 2rem 1.5rem 160px;
 }
 
-.headingPomodoro h1 {
+.naslov h1 {
     margin: 0;
     font-size: clamp(0.8rem, 2.5vw, 1rem);
     font-weight: 700;
@@ -28,7 +28,7 @@ body {
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
-.choosePomodoro {
+.odabir {
     display: flex;
     gap: 4px;
     flex-wrap: wrap;
@@ -42,7 +42,7 @@ body {
     box-shadow: 0 4px 20px rgba(99, 102, 241, 0.12);
 }
 
-.choosePomodoro button {
+.odabir button {
     background: transparent;
     border: none;
     padding: clamp(7px, 1.5vw, 9px) clamp(14px, 3vw, 22px);
@@ -56,11 +56,11 @@ body {
     white-space: nowrap;
 }
 
-.choosePomodoro button:hover {
+.odabir button:hover {
     background: rgba(255, 255, 255, 0.7);
 }
 
-.timer {
+.tajmer {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -74,7 +74,7 @@ body {
     box-shadow: 0 8px 40px rgba(99, 102, 241, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
-.timer h1 {
+.tajmer h1 {
     margin: 0;
     font-size: clamp(5rem, 22vw, 11rem);
     font-weight: 700;
@@ -85,14 +85,14 @@ body {
     text-shadow: 0 2px 0 rgba(255, 255, 255, 0.5);
 }
 
-.timer-controls {
+.gumbi {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
     justify-content: center;
 }
 
-.timer-controls button {
+.gumbi button {
     background: rgba(255, 255, 255, 0.65);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -108,28 +108,28 @@ body {
     font-family: inherit;
 }
 
-.timer-controls button:hover:not(:disabled) {
+.gumbi button:hover:not(:disabled) {
     background: rgba(255, 255, 255, 0.9);
     box-shadow: 0 4px 16px rgba(99, 102, 241, 0.2);
     transform: translateY(-1px);
 }
 
-.timer-controls button:active:not(:disabled) {
+.gumbi button:active:not(:disabled) {
     transform: translateY(0);
 }
 
-.timer-controls button:disabled {
+.gumbi button:disabled {
     opacity: 0.3;
     cursor: not-allowed;
 }
 
 @media (max-width: 380px) {
-    .timer {
+    .tajmer {
         padding: 1.8rem 1.5rem;
         border-radius: 24px;
     }
 
-    .timer h1 {
+    .tajmer h1 {
         font-size: 4.5rem;
     }
 }

@@ -13,13 +13,13 @@ body {
     padding: 2.5rem 2rem 180px;
 }
 
-.videos-page {
+.videi {
     width: 100%;
     max-width: 960px;
     margin: 0 auto;
 }
 
-.videos-title {
+.natpis {
     font-size: 2.1rem;
     font-weight: 900;
     background: linear-gradient(120deg, #4f46e5 0%, #7c3aed 60%, #a855f7 100%);
@@ -30,15 +30,14 @@ body {
     letter-spacing: -0.03em;
 }
 
-/* ── Search ───────────────────────────────────────────────── */
-.videos-search-wrap {
+.pretraga {
     display: flex;
     gap: 10px;
     margin-bottom: 2.2rem;
     flex-wrap: wrap;
 }
 
-.videos-input {
+.trazilica {
     flex: 1;
     min-width: 200px;
     padding: 0.85rem 1.2rem;
@@ -55,16 +54,16 @@ body {
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.videos-input::placeholder {
+.trazilica::placeholder {
     color: #a5b4fc;
 }
 
-.videos-input:focus {
+.trazilica:focus {
     border-color: rgba(99, 102, 241, 0.6);
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12), 0 2px 12px rgba(99, 102, 241, 0.1);
 }
 
-.videos-btn {
+.gumb {
     padding: 0.85rem 1.8rem;
     border-radius: 50px;
     border: none;
@@ -79,23 +78,22 @@ body {
     white-space: nowrap;
 }
 
-.videos-btn:hover:not(:disabled) {
+.gumb:hover:not(:disabled) {
     opacity: 0.9;
     transform: translateY(-1px);
     box-shadow: 0 6px 24px rgba(99, 102, 241, 0.5);
 }
 
-.videos-btn:active:not(:disabled) {
+.gumb:active:not(:disabled) {
     transform: translateY(0);
 }
 
-.videos-btn:disabled {
+.gumb:disabled {
     opacity: 0.45;
     cursor: not-allowed;
 }
 
-/* ── States ───────────────────────────────────────────────── */
-.videos-empty {
+.prazno {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -105,18 +103,18 @@ body {
     color: #a5b4fc;
 }
 
-.videos-empty-icon {
+.prazno-ikona {
     font-size: 4rem;
 }
 
-.videos-empty p {
+.prazno p {
     margin: 0;
     font-size: 1rem;
     font-weight: 500;
     color: #a5b4fc;
 }
 
-.videos-loading {
+.punjenje {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -126,11 +124,11 @@ body {
     font-weight: 500;
 }
 
-.videos-loading p {
+.punjenje p {
     margin: 0;
 }
 
-.videos-spinner {
+.tocak {
     width: 36px;
     height: 36px;
     border: 3px solid rgba(99, 102, 241, 0.2);
@@ -143,7 +141,7 @@ body {
     to { transform: rotate(360deg); }
 }
 
-.videos-error {
+.greska {
     color: #ef4444;
     background: rgba(239, 68, 68, 0.08);
     border: 1px solid rgba(239, 68, 68, 0.2);
@@ -153,22 +151,20 @@ body {
     margin-bottom: 1.5rem;
 }
 
-.videos-no-results {
+.bez-rezultata {
     text-align: center;
     color: #9ca3af;
     font-size: 0.95rem;
     padding: 3rem;
 }
 
-/* ── Grid ─────────────────────────────────────────────────── */
-.videos-grid {
+.mreza {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 1.3rem;
 }
 
-/* ── Card ─────────────────────────────────────────────────── */
-.video-card {
+.plocica {
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -187,7 +183,7 @@ body {
     transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.22s ease;
 }
 
-.video-card::before {
+.plocica::before {
     content: "";
     position: absolute;
     top: 0;
@@ -198,7 +194,7 @@ body {
     z-index: 1;
 }
 
-.video-card:hover {
+.plocica:hover {
     transform: translateY(-5px);
     box-shadow:
         0 2px 0 0 rgba(99, 102, 241, 0.08) inset,
@@ -206,7 +202,7 @@ body {
         0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
-.video-thumb-wrap {
+.slicica-omot {
     position: relative;
     width: 100%;
     aspect-ratio: 16 / 9;
@@ -214,7 +210,7 @@ body {
     background: #e0e7ff;
 }
 
-.video-thumb {
+.slicica {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -222,11 +218,11 @@ body {
     transition: transform 0.3s ease;
 }
 
-.video-card:hover .video-thumb {
+.plocica:hover .slicica {
     transform: scale(1.04);
 }
 
-.video-play {
+.pokretanje {
     position: absolute;
     inset: 0;
     display: flex;
@@ -238,12 +234,12 @@ body {
     color: rgba(255, 255, 255, 0);
 }
 
-.video-card:hover .video-play {
+.plocica:hover .pokretanje {
     background: rgba(99, 102, 241, 0.35);
     color: rgba(255, 255, 255, 0.95);
 }
 
-.video-info {
+.info {
     padding: 1rem 1.1rem 1.2rem;
     flex: 1;
     display: flex;
@@ -251,7 +247,7 @@ body {
     gap: 0.3rem;
 }
 
-.video-title {
+.naziv {
     margin: 0;
     font-size: 0.88rem;
     font-weight: 700;
@@ -263,7 +259,7 @@ body {
     overflow: hidden;
 }
 
-.video-channel {
+.kanal {
     margin: 0;
     font-size: 0.75rem;
     font-weight: 500;
@@ -272,17 +268,16 @@ body {
     letter-spacing: 0.05em;
 }
 
-/* ── Responsive ───────────────────────────────────────────── */
 @media (max-width: 600px) {
     body {
         padding: 1.5rem 1rem 180px;
     }
 
-    .videos-title {
+    .natpis {
         font-size: 1.6rem;
     }
 
-    .videos-grid {
+    .mreza {
         grid-template-columns: 1fr;
     }
 }
