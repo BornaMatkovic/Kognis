@@ -394,30 +394,41 @@ body {
     gap: 14px;
 }
 
-.kartica {
+.pitanje-kartica {
     background: white;
     border-radius: 16px;
-    padding: clamp(1rem, 3vw, 1.3rem) clamp(1rem, 3vw, 1.4rem);
+    padding: 0.9rem 1.1rem;
     box-shadow: 0 2px 12px rgba(99, 102, 241, 0.08);
     border: 1px solid #ede9fe;
+    border-left: 4px solid #6366f1;
 }
 
-.kartica h4 {
-    margin: 0 0 0.9rem;
+.pitanje-kartica h4 {
+    margin: 0 0 0.65rem;
     font-size: clamp(0.88rem, 2.5vw, 0.95rem);
     font-weight: 600;
     line-height: 1.5;
     color: #1e1b4b;
+    overflow-wrap: break-word;
 }
 
 .opcije {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    gap: 6px;
+}
+
+@media (max-width: 500px) {
+    .opcije {
+        grid-template-columns: 1fr;
+    }
 }
 
 .opcija {
-    padding: clamp(0.6rem, 1.5vw, 0.72rem) clamp(0.7rem, 2vw, 0.9rem);
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.5rem 0.8rem;
     cursor: pointer;
     border: 1.5px solid #ddd6fe;
     border-radius: 10px;
@@ -426,12 +437,12 @@ body {
     font-family: inherit;
     font-weight: 500;
     text-align: left;
-    line-height: 1.45;
+    line-height: 1.4;
     color: #1e1b4b;
     transition: border-color 0.2s, background 0.2s, transform 0.12s;
 }
 
-.opcija:hover:not(.is-selected) {
+.opcija:hover:not(.is-selected):not(.is-correct-reveal) {
     border-color: #6366f1;
     background: #eef2ff;
     transform: translateY(-1px);
@@ -453,6 +464,49 @@ body {
     color: #b91c1c;
 }
 
+.opcija.is-correct-reveal {
+    background: #f0fdf4;
+    border-color: #22c55e;
+    color: #15803d;
+    opacity: 0.8;
+}
+
+.opcija-slovo {
+    flex-shrink: 0;
+    width: 1.3rem;
+    height: 1.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    background: #ede9fe;
+    color: #6366f1;
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-top: 0.05rem;
+}
+
+.opcija.is-correct .opcija-slovo,
+.opcija.is-correct-reveal .opcija-slovo {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.opcija.is-incorrect .opcija-slovo {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.opcija-tekst {
+    flex: 1;
+}
+
+.opcija-ikona {
+    flex-shrink: 0;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
 .komentar {
     font-size: clamp(0.8rem, 2vw, 0.86rem);
     margin-top: 0.75rem;
@@ -460,10 +514,4 @@ body {
     font-style: italic;
     padding-top: 0.6rem;
     border-top: 1px solid #f3f0ff;
-}
-
-@media (max-width: 500px) {
-    .opcije {
-        grid-template-columns: 1fr;
-    }
 }

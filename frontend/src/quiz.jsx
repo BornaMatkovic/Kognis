@@ -249,17 +249,20 @@ function Quiz() {
 
             <section className="popis">
                 {pitanja.map((p, pIndex) => (
-                    <div key={pIndex} className="kartica">
+                    <div key={pIndex} className="pitanje-kartica">
                         <h4>{pIndex + 1}. {p.pitanje}</h4>
                         <div className="opcije">
                             {p.opcije.map((opcija, oIndex) => {
                                 const jeKliknuto = odabraniOdgovori[pIndex] === oIndex;
                                 const jeTocno = oIndex === p.tocanIndeks;
+                                const jeOdgovoreno = odabraniOdgovori[pIndex] !== undefined;
 
                                 const buttonClasses = ["opcija"];
                                 if (jeKliknuto) {
                                     buttonClasses.push("is-selected");
                                     buttonClasses.push(jeTocno ? "is-correct" : "is-incorrect");
+                                } else if (jeOdgovoreno && jeTocno) {
+                                    buttonClasses.push("is-correct-reveal");
                                 }
 
                                 return (
@@ -268,7 +271,11 @@ function Quiz() {
                                         onClick={() => handleOdgovor(pIndex, oIndex)}
                                         className={buttonClasses.join(" ")}
                                     >
-                                        {opcija} {jeKliknuto && (jeTocno ? '✅' : '❌')}
+                                        <span className="opcija-slovo">{['A','B','C','D'][oIndex]}</span>
+                                        <span className="opcija-tekst">{opcija}</span>
+                                        {jeKliknuto && (
+                                            <span className="opcija-ikona">{jeTocno ? '✓' : '✗'}</span>
+                                        )}
                                     </button>
                                 );
                             })}
