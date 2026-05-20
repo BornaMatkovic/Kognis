@@ -1,5 +1,4 @@
 import json
-from typing import Any
 
 from django.contrib.auth.hashers import make_password, check_password
 from django.db import connection
@@ -8,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
 
-def serialize_user_row(row: tuple) -> dict[str, Any]:
+def serialize_user_row(row):
     id_, username, email, password, timer_minutes, timer_interrupts, score, quiz_correct, quiz_wrong = row
     return {
         "id": id_,
@@ -24,7 +23,7 @@ def serialize_user_row(row: tuple) -> dict[str, Any]:
 
 @csrf_exempt
 @require_http_methods(["GET", "PUT"])
-def user_detail(request: Any, user_id: int) -> JsonResponse:
+def user_detail(request, user_id):
     with connection.cursor() as cursor:
         cursor.execute(
             "SELECT id, username, email, password, timer_minutes, timer_interrupts, score, quiz_correct, quiz_wrong FROM user WHERE id = %s",
@@ -37,7 +36,7 @@ def user_detail(request: Any, user_id: int) -> JsonResponse:
 
         if request.method == "PUT":
             try:
-                payload: dict[str, Any] = json.loads(request.body or "{}")
+                payload = json.loads(request.body or "{}")
             except json.JSONDecodeError:
                 return JsonResponse({"detail": "Invalid JSON payload."}, status=400)
 
@@ -61,9 +60,9 @@ def user_detail(request: Any, user_id: int) -> JsonResponse:
 
 @csrf_exempt
 @require_http_methods(["POST"])
-def user_create(request: Any) -> JsonResponse:
+def user_create(request):
     try:
-        payload: dict[str, Any] = json.loads(request.body or "{}")
+        payload = json.loads(request.body or "{}")
     except json.JSONDecodeError:
         return JsonResponse({"detail": "Invalid JSON payload."}, status=400)
 
@@ -72,8 +71,7 @@ def user_create(request: Any) -> JsonResponse:
         return JsonResponse({"detail": "Username is required."}, status=400)
 
     email = payload.get("email", "")
-    raw_password = payload.get("password", "")
-    password = make_password(raw_password)
+    password = make_password(payload.get("password", ""))
     timer_minutes = payload.get("timer_minutes", 0)
     timer_interrupts = payload.get("timer_interrupts", 0)
     score = payload.get("score", 0)
@@ -91,9 +89,9 @@ def user_create(request: Any) -> JsonResponse:
 
 @csrf_exempt
 @require_http_methods(["POST"])
-def login(request: Any) -> JsonResponse:
+def login(request):
     try:
-        payload: dict[str, Any] = json.loads(request.body or "{}")
+        payload = json.loads(request.body or "{}")
     except json.JSONDecodeError:
         return JsonResponse({"detail": "Invalid JSON payload."}, status=400)
 
@@ -101,7 +99,7 @@ def login(request: Any) -> JsonResponse:
     if not identifier:
         return JsonResponse({"detail": "Username or email is required."}, status=400)
 
-    password = payload.get("password", "")
+    password = payload.get("password")
     if not password:
         return JsonResponse({"detail": "Password is required."}, status=400)
 
@@ -128,7 +126,7 @@ def login(request: Any) -> JsonResponse:
 
 @csrf_exempt
 @require_http_methods(["GET"])
-def get_me(request: Any) -> JsonResponse:
+def get_me(request):
     user_id = request.session.get("user_id")
 
     if not user_id:
@@ -151,20 +149,20 @@ def get_me(request: Any) -> JsonResponse:
 
 @csrf_exempt
 @require_http_methods(["GET", "POST"])
-def quiz_list_create(request: Any) -> JsonResponse:
+def quiz_list_create(request):
     user_id = request.session.get("user_id")
     if not user_id:
         return JsonResponse({"detail": "Not authenticated."}, status=401)
 
     if request.method == "POST":
         try:
-            payload: dict[str, Any] = json.loads(request.body or "{}")
+            payload = json.loads(request.body or "{}")
         except json.JSONDecodeError:
             return JsonResponse({"detail": "Invalid JSON payload."}, status=400)
 
         title = payload.get("title", "").strip()
         text = payload.get("text", "").strip()
-        if not title or not text:
+        if not (title and text):
             return JsonResponse({"detail": "Title and text are required."}, status=400)
 
         with connection.cursor() as cursor:
@@ -200,18 +198,18 @@ def quiz_list_create(request: Any) -> JsonResponse:
 
 @csrf_exempt
 @require_http_methods(["POST"])
-def quiz_stats(request: Any) -> JsonResponse:
+def quiz_stats(request):
     user_id = request.session.get("user_id")
     if not user_id:
         return JsonResponse({"detail": "Not authenticated."}, status=401)
 
     try:
-        payload: dict[str, Any] = json.loads(request.body or "{}")
+        payload = json.loads(request.body or "{}")
     except json.JSONDecodeError:
         return JsonResponse({"detail": "Invalid JSON payload."}, status=400)
 
-    correct = int(payload.get("correct", 0))
-    wrong = int(payload.get("wrong", 0))
+    correct = int(payload.get("correct") or 0)
+    wrong = int(payload.get("wrong") or 0)
 
     with connection.cursor() as cursor:
         cursor.execute(
