@@ -8,16 +8,14 @@ function Quiz() {
     const [prompt, setPrompt] = useState('');
     const [brojPitanja, setBrojPitanja] = useState(10);
     const [pitanja, setPitanja] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [saving, setSaving] = useState(false);
-    const [savedMsg, setSavedMsg] = useState('');
+    const [ucitava, setUcitava] = useState(false);
+    const [seSpremava, setSeSpremava] = useState(false);
+    const [porukaSpremanja, setPorukaSpremanja] = useState('');
     const [odabraniOdgovori, setOdabraniOdgovori] = useState({});
     const [sidebarOtvoren, setSidebarOtvoren] = useState(false);
     const [spremiKvizovi, setSpremiKvizovi] = useState([]);
     const [loadingKvizovi, setLoadingKvizovi] = useState(false);
     const [dragging, setDragging] = useState(false);
-
-    const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
     const dohvatiKvizove = async () => {
         setLoadingKvizovi(true);
@@ -43,43 +41,43 @@ function Quiz() {
         setPrompt(kviz.text);
         setPitanja([]);
         setOdabraniOdgovori({});
-        setSavedMsg('');
+        setPorukaSpremanja('');
         setSidebarOtvoren(false);
     };
 
-    const systemPrompt = `Generate a quiz based on the text.
-    Respond ONLY with a JSON array of objects.
-    Each object must have:
-    "pitanje": "text of the question",
-    "opcije": ["option 1", "option 2", "option 3", "option 4"],
-    "tocanIndeks": index of correct answer (0-3).
-    Do not use markdown formatting or backticks.`;
-
-    const model = genAI.getGenerativeModel({
-        model: "gemini-2.5-flash",
-        systemInstruction: systemPrompt
-    });
-
     const generirajKviz = async () => {
         if (!prompt) return;
-        setLoading(true);
+        setUcitava(true);
         setPitanja([]);
         setOdabraniOdgovori({});
-        setSavedMsg('');
+        setPorukaSpremanja('');
+
+        const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({
+            model: "gemini-2.5-flash",
+            systemInstruction: `Generate a quiz based on the text.
+            Respond ONLY with a JSON array of objects.
+            Each object must have:
+            "pitanje": "text of the question",
+            "opcije": ["option 1", "option 2", "option 3", "option 4"],
+            "tocanIndeks": index of correct answer (0-3).
+            Do not use markdown formatting or backticks.`
+        });
+
+        setBrojPitanja(brojPitanja);
 
         try {
             const result = await model.generateContent(
                 `Generate exactly ${brojPitanja} questions.\n\n${prompt}`
             );
             const responseText = result.response.text();
-            const cleanJson = responseText.replace(/```json|```/g, "");
-            const data = JSON.parse(cleanJson);
+            const data = JSON.parse(responseText);
             setPitanja(data);
         } catch (error) {
             console.error("Greška:", error);
             alert("Došlo je do greške pri generiranju kviza. Provjeri konzolu.");
         }
-        setLoading(false);
+        setUcitava(false);
     };
 
     const spremiKviz = async () => {
@@ -87,8 +85,8 @@ function Quiz() {
             alert("Upiši naslov i tekst prije spremanja.");
             return;
         }
-        setSaving(true);
-        setSavedMsg('');
+        setSeSpremava(true);
+        setPorukaSpremanja('');
         try {
             const response = await fetch("http://localhost:8000/api/quiz/", {
                 method: "POST",
@@ -97,16 +95,16 @@ function Quiz() {
                 body: JSON.stringify({ title: naslov.trim(), text: prompt.trim() }),
             });
             if (response.ok) {
-                setSavedMsg("Kviz je uspješno spremljen!");
+                setPorukaSpremanja("Kviz je uspješno spremljen!");
                 dohvatiKvizove();
             } else {
                 const data = await response.json();
-                setSavedMsg(data.detail || "Greška pri spremanju.");
+                setPorukaSpremanja(data.detail || "Greška pri spremanju.");
             }
         } catch {
-            setSavedMsg("Mrežna greška. Provjeri je li backend pokrenut.");
+            setPorukaSpremanja("Mrežna greška. Provjeri je li backend pokrenut.");
         }
-        setSaving(false);
+        setSeSpremava(false);
     };
 
     const handleOdgovor = (pitanjeIndex, oIndex) => {
@@ -226,23 +224,23 @@ function Quiz() {
                     <div className="akcije">
                         <button
                             onClick={generirajKviz}
-                            disabled={loading}
+                            disabled={ucitava}
                             className="generiraj"
                         >
-                            {loading ? 'Stvaram kviz...' : 'Generiraj Kviz'}
+                            {ucitava ? 'Stvaram kviz...' : 'Generiraj Kviz'}
                         </button>
                         <button
                             onClick={spremiKviz}
-                            disabled={saving}
+                            disabled={seSpremava}
                             className="spremi"
                         >
-                            {saving ? 'Spremam...' : 'Spremi'}
+                            {seSpremava ? 'Spremam...' : 'Spremi'}
                         </button>
                     </div>
                 </div>
-                {savedMsg && (
-                    <p className={`poruka ${savedMsg.includes('uspješno') ? 'is-success' : 'is-error'}`}>
-                        {savedMsg}
+                {porukaSpremanja && (
+                    <p className={`poruka ${porukaSpremanja.includes('uspješno') ? 'is-success' : 'is-error'}`}>
+                        {porukaSpremanja}
                     </p>
                 )}
             </section>
@@ -271,7 +269,7 @@ function Quiz() {
                                         onClick={() => handleOdgovor(pIndex, oIndex)}
                                         className={buttonClasses.join(" ")}
                                     >
-                                        <span className="opcija-slovo">{['A','B','C','D'][oIndex]}</span>
+                                        <span className="opcija-slovo">{['A', 'B', 'C', 'D'][oIndex]}</span>
                                         <span className="opcija-tekst">{opcija}</span>
                                         {jeKliknuto && (
                                             <span className="opcija-ikona">{jeTocno ? '✓' : '✗'}</span>
