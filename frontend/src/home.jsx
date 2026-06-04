@@ -19,7 +19,6 @@ function Home() {
                     className="pozadina"
                     style={{ backgroundImage: `url(${bg})` }}
                 >
-                    Content
                 </div>
             </div>
             <Navigation />
