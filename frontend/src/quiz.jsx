@@ -20,7 +20,7 @@ function Quiz() {
     const dohvatiKvizove = async () => {
         setLoadingKvizovi(true);
         try {
-            const res = await fetch("http://localhost:8000/api/quiz/", {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/quiz/`, {
                 credentials: "include",
             });
             if (res.ok) {
@@ -88,7 +88,7 @@ function Quiz() {
         setSeSpremava(true);
         setPorukaSpremanja('');
         try {
-            const response = await fetch("http://localhost:8000/api/quiz/", {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/quiz/`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
@@ -111,7 +111,7 @@ function Quiz() {
         if (odabraniOdgovori[pitanjeIndex] !== undefined) return;
 
         const jeTocno = oIndex === pitanja[pitanjeIndex].tocanIndeks;
-        fetch("http://localhost:8000/api/quiz-stats/", {
+        fetch(`${import.meta.env.VITE_API_URL}/api/quiz-stats/`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
