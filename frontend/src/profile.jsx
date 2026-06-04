@@ -11,7 +11,7 @@ function Profile() {
     useEffect(() => {
         const ucitajProfil = async () => {
             try {
-                const res = await fetch("http://localhost:8000/api/me/", {
+                const res = await fetch(`${import.meta.env.VITE_API_URL}/api/me/`, {
                     method: "GET",
                     credentials: "include",
                 });

@@ -62,7 +62,7 @@ function Pomodoro() {
                 score: Math.max(0, (user.score || 0) + scoreChange),
             };
 
-            const res = await fetch(`http://localhost:8000/api/users/${user.id}/`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users/${user.id}/`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
