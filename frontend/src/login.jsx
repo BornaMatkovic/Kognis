@@ -27,7 +27,7 @@ function Login() {
             if (res.ok) {
                 localStorage.removeItem("user");
                 sessionStorage.setItem("user", JSON.stringify(data));
-                navigate("/home");
+                window.location.href = "/home";
             } else {
                 setGreska(data.detail || "Pogrešni podaci. Pokušaj ponovo.");
             }
