@@ -7,20 +7,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
 
-def serialize_user_row(row):
-    id_, username, email, password, timer_minutes, timer_interrupts, score, quiz_correct, quiz_wrong = row
-    return {
-        "id": id_,
-        "username": username,
-        "email": email,
-        "timer_minutes": timer_minutes,
-        "timer_interrupts": timer_interrupts,
-        "score": score,
-        "quiz_correct": quiz_correct,
-        "quiz_wrong": quiz_wrong,
-    }
-
-
 @csrf_exempt
 @require_http_methods(["GET", "PUT"])
 def user_detail(request, user_id):
@@ -32,13 +18,13 @@ def user_detail(request, user_id):
         row = cursor.fetchone()
 
         if not row:
-            return JsonResponse({"detail": "User not found."}, status=404)
+            return JsonResponse({"detail": "Korisnik nije pronađen."}, status=404)
 
         if request.method == "PUT":
             try:
                 payload = json.loads(request.body or "{}")
             except json.JSONDecodeError:
-                return JsonResponse({"detail": "Invalid JSON payload."}, status=400)
+                return JsonResponse({"detail": "Neispravan JSON."}, status=400)
 
             id_, old_username, old_email, old_password, old_timer_minutes, old_timer_interrupts, old_score, old_quiz_correct, old_quiz_wrong = row
             username = payload.get("username", old_username)
@@ -55,7 +41,17 @@ def user_detail(request, user_id):
             )
             row = (user_id, username, email, password, timer_minutes, timer_interrupts, score, quiz_correct, quiz_wrong)
 
-    return JsonResponse(serialize_user_row(row))
+    id_, username, email, password, timer_minutes, timer_interrupts, score, quiz_correct, quiz_wrong = row
+    return JsonResponse({
+        "id": id_,
+        "username": username,
+        "email": email,
+        "timer_minutes": timer_minutes,
+        "timer_interrupts": timer_interrupts,
+        "score": score,
+        "quiz_correct": quiz_correct,
+        "quiz_wrong": quiz_wrong,
+    })
 
 
 @csrf_exempt
@@ -64,11 +60,11 @@ def user_create(request):
     try:
         payload = json.loads(request.body or "{}")
     except json.JSONDecodeError:
-        return JsonResponse({"detail": "Invalid JSON payload."}, status=400)
+        return JsonResponse({"detail": "Neispravan JSON."}, status=400)
 
     username = payload.get("username")
     if not username:
-        return JsonResponse({"detail": "Username is required."}, status=400)
+        return JsonResponse({"detail": "Korisničko ime je obavezno."}, status=400)
 
     email = payload.get("email", "")
     password = make_password(payload.get("password", ""))
@@ -84,7 +80,17 @@ def user_create(request):
         user_id = cursor.lastrowid
         row = (user_id, username, email, password, timer_minutes, timer_interrupts, score, 0, 0)
 
-    return JsonResponse(serialize_user_row(row), status=201)
+    id_, username, email, password, timer_minutes, timer_interrupts, score, quiz_correct, quiz_wrong = row
+    return JsonResponse({
+        "id": id_,
+        "username": username,
+        "email": email,
+        "timer_minutes": timer_minutes,
+        "timer_interrupts": timer_interrupts,
+        "score": score,
+        "quiz_correct": quiz_correct,
+        "quiz_wrong": quiz_wrong,
+    }, status=201)
 
 
 @csrf_exempt
@@ -93,15 +99,15 @@ def login(request):
     try:
         payload = json.loads(request.body or "{}")
     except json.JSONDecodeError:
-        return JsonResponse({"detail": "Invalid JSON payload."}, status=400)
+        return JsonResponse({"detail": "Neispravan JSON."}, status=400)
 
     identifier = payload.get("username") or payload.get("email")
     if not identifier:
-        return JsonResponse({"detail": "Username or email is required."}, status=400)
+        return JsonResponse({"detail": "Korisničko ime ili e-mail je obavezan."}, status=400)
 
     password = payload.get("password")
     if not password:
-        return JsonResponse({"detail": "Password is required."}, status=400)
+        return JsonResponse({"detail": "Lozinka je obavezna."}, status=400)
 
     with connection.cursor() as cursor:
         cursor.execute(
@@ -111,12 +117,12 @@ def login(request):
         row = cursor.fetchone()
 
     if not row:
-        return JsonResponse({"detail": "User not found."}, status=404)
+        return JsonResponse({"detail": "Korisnik nije pronađen."}, status=404)
 
     user_id, username, email, hashed_password, timer_minutes, timer_interrupts, score, quiz_correct, quiz_wrong = row
 
     if not check_password(password, hashed_password):
-        return JsonResponse({"detail": "Invalid password."}, status=401)
+        return JsonResponse({"detail": "Pogrešna lozinka."}, status=401)
 
     request.session["user_id"] = user_id
     request.session.modified = True
@@ -143,8 +149,8 @@ def get_me(request):
             request.session.pop("user_id", None)
             return JsonResponse({"authenticated": False}, status=200)
 
-    user_data = serialize_user_row(row)
-    return JsonResponse({"authenticated": True, **user_data}, status=200)
+    id_, username, email, password, timer_minutes, timer_interrupts, score, quiz_correct, quiz_wrong = row
+    return JsonResponse({"authenticated": True, "id": id_, "username": username, "email": email, "timer_minutes": timer_minutes, "timer_interrupts": timer_interrupts, "score": score, "quiz_correct": quiz_correct, "quiz_wrong": quiz_wrong}, status=200)
 
 
 @csrf_exempt
@@ -152,18 +158,18 @@ def get_me(request):
 def quiz_list_create(request):
     user_id = request.session.get("user_id")
     if not user_id:
-        return JsonResponse({"detail": "Not authenticated."}, status=401)
+        return JsonResponse({"detail": "Niste prijavljeni."}, status=401)
 
     if request.method == "POST":
         try:
             payload = json.loads(request.body or "{}")
         except json.JSONDecodeError:
-            return JsonResponse({"detail": "Invalid JSON payload."}, status=400)
+            return JsonResponse({"detail": "Neispravan JSON."}, status=400)
 
         title = payload.get("title", "").strip()
         text = payload.get("text", "").strip()
         if not (title and text):
-            return JsonResponse({"detail": "Title and text are required."}, status=400)
+            return JsonResponse({"detail": "Naslov i tekst su obavezni."}, status=400)
 
         with connection.cursor() as cursor:
             cursor.execute(
@@ -201,12 +207,12 @@ def quiz_list_create(request):
 def quiz_stats(request):
     user_id = request.session.get("user_id")
     if not user_id:
-        return JsonResponse({"detail": "Not authenticated."}, status=401)
+        return JsonResponse({"detail": "Niste prijavljeni."}, status=401)
 
     try:
         payload = json.loads(request.body or "{}")
     except json.JSONDecodeError:
-        return JsonResponse({"detail": "Invalid JSON payload."}, status=400)
+        return JsonResponse({"detail": "Neispravan JSON."}, status=400)
 
     correct = int(payload.get("correct") or 0)
     wrong = int(payload.get("wrong") or 0)
