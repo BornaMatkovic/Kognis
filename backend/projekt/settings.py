@@ -28,8 +28,6 @@ DEBUG = False
 ALLOWED_HOSTS = ['*']
 
 
-# Application definition
-
 INSTALLED_APPS = [
     'django.contrib.sessions',
     'corsheaders',
@@ -89,7 +87,6 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-# CORS Configuration
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     'http://localhost:5174',
@@ -117,7 +114,6 @@ CORS_EXPOSE_HEADERS = [
     'set-cookie',
 ]
 
-# Session Configuration za CORS
 SESSION_COOKIE_HTTPONLY = False
 # SESSION_COOKIE_SAMESITE = 'Lax'
 # SESSION_COOKIE_SECURE = False
